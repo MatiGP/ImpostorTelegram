@@ -1,7 +1,7 @@
 ﻿
 namespace ImpostorTelegram
 {
-    partial class Form1
+    partial class ImpostorTelegram
     {
         /// <summary>
         ///  Required designer variable.
@@ -29,13 +29,57 @@ namespace ImpostorTelegram
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.ChatText = new System.Windows.Forms.TextBox();
+            this.SendMessage_Button = new System.Windows.Forms.Button();
+            this.ChatReceiver = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // ChatText
+            // 
+            this.ChatText.Location = new System.Drawing.Point(35, 32);
+            this.ChatText.Name = "ChatText";
+            this.ChatText.Size = new System.Drawing.Size(100, 23);
+            this.ChatText.TabIndex = 0;
+            // 
+            // SendMessage_Button
+            // 
+            this.SendMessage_Button.Location = new System.Drawing.Point(35, 79);
+            this.SendMessage_Button.Name = "SendMessage_Button";
+            this.SendMessage_Button.Size = new System.Drawing.Size(100, 47);
+            this.SendMessage_Button.TabIndex = 1;
+            this.SendMessage_Button.Text = "button1";
+            this.SendMessage_Button.UseVisualStyleBackColor = true;
+            this.SendMessage_Button.Click += new System.EventHandler(this.SendMessage_Button_Click);
+            // 
+            // ChatReceiver
+            // 
+            this.ChatReceiver.AutoSize = true;
+            this.ChatReceiver.Location = new System.Drawing.Point(196, 60);
+            this.ChatReceiver.Name = "ChatReceiver";
+            this.ChatReceiver.Size = new System.Drawing.Size(38, 15);
+            this.ChatReceiver.TabIndex = 2;
+            this.ChatReceiver.Text = "label1";
+            // 
+            // ImpostorTelegram
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ChatReceiver);
+            this.Controls.Add(this.SendMessage_Button);
+            this.Controls.Add(this.ChatText);
+            this.Name = "ImpostorTelegram";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox ChatText;
+        private System.Windows.Forms.Button SendMessage_Button;
+        private System.Windows.Forms.Label ChatReceiver;
     }
 }
 
