@@ -18,6 +18,8 @@ namespace ImpostorTelegram
         private Sender m_Sender = null;
         private Panel AppMainPanel, WelcomePanel;
         TextBox NameTextBox, SurnameTextBox;
+        TableLayoutPanel MessegesLayoutPanel;
+        Color mainBackgroundColor = Color.FromArgb(255, 109, 109, 109);
         public ImpostorTelegram()
         {
             InitializeComponent();
@@ -57,13 +59,13 @@ namespace ImpostorTelegram
 
             AppMainPanel = new Panel();
             AppMainPanel.Dock = DockStyle.Fill;
-            AppMainPanel.BackColor = Color.Red;
+            AppMainPanel.BackColor = mainBackgroundColor;
+            AppMainPanel.AutoScroll = true;
             Controls.Add(AppMainPanel);
 
             #region WelcomeScreen
             WelcomePanel = new Panel();
             WelcomePanel.Dock = DockStyle.Fill;
-            WelcomePanel.BackColor = Color.Green;
             Controls.Add(WelcomePanel);
 
             Label AppNameLabel, NameLabel, SurnameLabel;
@@ -74,33 +76,45 @@ namespace ImpostorTelegram
             AppNameLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             AppNameLabel.TextAlign = ContentAlignment.MiddleCenter;
             AppNameLabel.Text = "Impostor Telegram";
+            AppNameLabel.Font = new Font("Century Gothic Bold", 30);
 
             NameLabel.AutoSize = false;
             NameLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             NameLabel.TextAlign = ContentAlignment.MiddleCenter;
             NameLabel.Text = "Your Name";
+            NameLabel.Font = new Font("Century Gothic", 14);
 
             SurnameLabel.AutoSize = false;
             SurnameLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             SurnameLabel.TextAlign = ContentAlignment.MiddleCenter;
             SurnameLabel.Text = "Your Surname";
+            SurnameLabel.Font = new Font("Century Gothic", 14);
+
 
             NameTextBox = new TextBox();
             SurnameTextBox = new TextBox();
+            SurnameTextBox.Width = 130;
             NameTextBox.AutoSize = false;
             NameTextBox.Anchor =  AnchorStyles.Top;
+            NameTextBox.Width = 130;
             SurnameTextBox.AutoSize = false;
             SurnameTextBox.Anchor = AnchorStyles.Top;
 
             Button CreateAccountButton = new Button();
             CreateAccountButton.Text = "Create";
+            CreateAccountButton.Font = new Font("Century Gothic Bold", 14);
             CreateAccountButton.AutoSize = false;
             CreateAccountButton.Anchor = AnchorStyles.Top;
             CreateAccountButton.Click += OnCreateButtonClick;
+            CreateAccountButton.Width = 130;
+            CreateAccountButton.Height = 40;
+            CreateAccountButton.FlatStyle = FlatStyle.Flat;
+            CreateAccountButton.FlatAppearance.BorderSize = 0;
+            CreateAccountButton.BackColor = Color.FromArgb(255, 166, 166, 166);
 
             TableLayoutPanel NewUserMenu = new TableLayoutPanel();
-            NewUserMenu.BackColor = Color.Yellow;
-            NewUserMenu.Padding = new Padding(50, 100, 50, 100);
+            NewUserMenu.BackColor = mainBackgroundColor;
+            NewUserMenu.Padding = new Padding(0, 100, 0, 100);
             NewUserMenu.Dock = DockStyle.Fill;
             NewUserMenu.ColumnCount = 1;
             NewUserMenu.RowCount = 6;
@@ -116,6 +130,47 @@ namespace ImpostorTelegram
 
             WelcomePanel.Controls.Add(NewUserMenu);
 
+            #endregion
+
+            #region MessagesScreen
+            MessegesLayoutPanel = new TableLayoutPanel();
+            MessegesLayoutPanel.BackColor = mainBackgroundColor;
+            MessegesLayoutPanel.Dock = DockStyle.Top;
+            MessegesLayoutPanel.ColumnCount = 1;
+            MessegesLayoutPanel.Height = 6;
+            MessegesLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            Label messagesScreenLabel = new Label();
+            messagesScreenLabel.Text = "Impostor Telegram";
+            messagesScreenLabel.Font = new Font("Century Gothic Bold", 30);
+            messagesScreenLabel.AutoSize = false;
+            messagesScreenLabel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+            messagesScreenLabel.TextAlign = ContentAlignment.MiddleCenter;
+            MessegesLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
+            MessegesLayoutPanel.Controls.Add(messagesScreenLabel);
+            MessegesLayoutPanel.Height += 80;
+
+
+            //////////////////////////////
+            ChatButton testButton = new ChatButton("Kacper", "Kotecki");
+            testButton.Width = 300;
+            ChatButton testButton2 = new ChatButton("Mateusz", "Świeca");
+            testButton2.Width = 300;
+            testButton2.Location = new Point(0, 80);
+            ChatButton testButton3 = new ChatButton("Lech", "Kaczyński");
+            testButton2.Width = 300;
+            testButton2.Location = new Point(0, 80);
+            MessegesLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
+            MessegesLayoutPanel.Controls.Add(testButton);
+            MessegesLayoutPanel.Height += 80;
+            MessegesLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
+            MessegesLayoutPanel.Controls.Add(testButton2);
+            MessegesLayoutPanel.Height += 80;
+            MessegesLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
+            MessegesLayoutPanel.Controls.Add(testButton3);
+            MessegesLayoutPanel.Height += 80;
+            /////////////////////////////
+
+            AppMainPanel.Controls.Add(MessegesLayoutPanel);
             #endregion
 
             OnFirstLaunch();
