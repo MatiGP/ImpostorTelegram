@@ -16,10 +16,12 @@ namespace ImpostorTelegram
     {
         private Receiver m_Receiver = null;
         private Sender m_Sender = null;
+        
         private Panel AppMainPanel, WelcomePanel;
         TextBox NameTextBox, SurnameTextBox;
         TableLayoutPanel MessegesLayoutPanel;
         Color mainBackgroundColor = Color.FromArgb(255, 109, 109, 109);
+       
         public ImpostorTelegram()
         {
             InitializeComponent();
@@ -90,16 +92,16 @@ namespace ImpostorTelegram
             SurnameLabel.Text = "Your Surname";
             SurnameLabel.Font = new Font("Century Gothic", 14);
 
-
-            NameTextBox = new TextBox();
             SurnameTextBox = new TextBox();
             SurnameTextBox.Width = 130;
+            SurnameTextBox.AutoSize = false;
+            SurnameTextBox.Anchor = AnchorStyles.Top;
+            
+            NameTextBox = new TextBox();
             NameTextBox.AutoSize = false;
             NameTextBox.Anchor =  AnchorStyles.Top;
             NameTextBox.Width = 130;
-            SurnameTextBox.AutoSize = false;
-            SurnameTextBox.Anchor = AnchorStyles.Top;
-
+           
             Button CreateAccountButton = new Button();
             CreateAccountButton.Text = "Create";
             CreateAccountButton.Font = new Font("Century Gothic Bold", 14);
@@ -119,8 +121,12 @@ namespace ImpostorTelegram
             NewUserMenu.ColumnCount = 1;
             NewUserMenu.RowCount = 6;
             NewUserMenu.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300F));
+            
             for (int i = 0; i < 6; i++)
+            {
                 NewUserMenu.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+            }               
+            
             NewUserMenu.Controls.Add(AppNameLabel);
             NewUserMenu.Controls.Add(NameLabel);
             NewUserMenu.Controls.Add(NameTextBox);

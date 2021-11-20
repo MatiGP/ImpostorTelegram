@@ -18,7 +18,7 @@ namespace ImpostorTelegram
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
-                                 arguments: null);
+                                 arguments: null);           
 
             byte[] body = RabbitUtils.CreateEncodedMessage(message);
 
