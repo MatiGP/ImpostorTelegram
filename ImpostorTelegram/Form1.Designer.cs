@@ -29,57 +29,49 @@ namespace ImpostorTelegram
         /// </summary>
         private void InitializeComponent()
         {
-            this.ChatText = new System.Windows.Forms.TextBox();
-            this.SendMessage_Button = new System.Windows.Forms.Button();
-            this.ChatReceiver = new System.Windows.Forms.Label();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // ChatText
+            // splitContainer1
             // 
-            this.ChatText.Location = new System.Drawing.Point(35, 32);
-            this.ChatText.Name = "ChatText";
-            this.ChatText.Size = new System.Drawing.Size(100, 23);
-            this.ChatText.TabIndex = 0;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Size = new System.Drawing.Size(150, 100);
+            this.splitContainer1.TabIndex = 1;
             // 
-            // SendMessage_Button
+            // splitContainer2
             // 
-            this.SendMessage_Button.Location = new System.Drawing.Point(35, 79);
-            this.SendMessage_Button.Name = "SendMessage_Button";
-            this.SendMessage_Button.Size = new System.Drawing.Size(100, 47);
-            this.SendMessage_Button.TabIndex = 1;
-            this.SendMessage_Button.Text = "button1";
-            this.SendMessage_Button.UseVisualStyleBackColor = true;
-            this.SendMessage_Button.Click += new System.EventHandler(this.SendMessage_Button_Click);
-            // 
-            // ChatReceiver
-            // 
-            this.ChatReceiver.AutoSize = true;
-            this.ChatReceiver.Location = new System.Drawing.Point(196, 60);
-            this.ChatReceiver.Name = "ChatReceiver";
-            this.ChatReceiver.Size = new System.Drawing.Size(38, 15);
-            this.ChatReceiver.TabIndex = 2;
-            this.ChatReceiver.Text = "label1";
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Size = new System.Drawing.Size(54, 8);
+            this.splitContainer2.SplitterDistance = 25;
+            this.splitContainer2.TabIndex = 2;
             // 
             // ImpostorTelegram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.ChatReceiver);
-            this.Controls.Add(this.SendMessage_Button);
-            this.Controls.Add(this.ChatText);
+            this.ClientSize = new System.Drawing.Size(862, 561);
             this.Name = "ImpostorTelegram";
-            this.Text = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Imporstor Telegram";
+            this.Load += new System.EventHandler(this.ImpostorTelegram_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox ChatText;
-        private System.Windows.Forms.Button SendMessage_Button;
-        private System.Windows.Forms.Label ChatReceiver;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
     }
 }
 
