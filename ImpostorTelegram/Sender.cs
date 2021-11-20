@@ -12,7 +12,7 @@ namespace ImpostorTelegram
             channel = RabbitUtils.CreateConnection();
         }
 
-        public void SendMessage(string message)
+        public void SendSimpleMessage(string message)
         {
             channel.QueueDeclare(queue: "hello",
                                  durable: false,
@@ -27,5 +27,7 @@ namespace ImpostorTelegram
                                  basicProperties: null,
                                  body: body);
         }
+
+
     }
 }

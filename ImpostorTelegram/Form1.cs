@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Media;
 using System.Windows.Forms;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace ImpostorTelegram
 {
@@ -23,18 +17,56 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver();
             m_Sender = new Sender();
 
-            m_Receiver.OnMessageReceived += HandleMessageReceived;
+            m_Receiver.OnMessageReceived += HandleMessageReceived;   
         }
 
         private void HandleMessageReceived(object sender, string e)
         {
-            ChatReceiver.Invoke(new Action(() => { ChatReceiver.Text = e; }));
+            ChatReceiver.Invoke((Action) (() => { ChatReceiver.Text = e; }));
         }
 
         private void SendMessage_Button_Click(object sender, EventArgs e)
         {
-            m_Sender.SendMessage(ChatText.Text);
-                     
+            m_Sender.SendSimpleMessage(ChatText.Text);                    
+        }
+
+        private void LoadImage_Button_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image Files (*.png)|*.png";
+
+            string filePath = string.Empty;
+            string fileContent = string.Empty;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                filePath = openFileDialog.FileName;
+
+                Stream fileStream = openFileDialog.OpenFile();
+                                  
+                byte[] imageBytes = RabbitUtils.CreateEncodedImage(Image.FromFile(filePath));
+                                
+            }    
+        }
+
+        private void LoadSound_Button_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image Files (*.wav)|*.wav";
+
+            string filePath = string.Empty;
+            string fileContent = string.Empty;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                filePath = openFileDialog.FileName;
+                 RabbitUtils.CreateEncodedSound(filePath);
+            }
+        }
+
+        private void Play_Click(object sender, EventArgs e)
+        {
+                            
         }
     }
 }

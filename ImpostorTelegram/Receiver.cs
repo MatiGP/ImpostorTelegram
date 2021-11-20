@@ -32,7 +32,7 @@ namespace ImpostorTelegram
 
         private void HandleMessageReceived(object sender, BasicDeliverEventArgs deliverArgs)
         {
-            string receivedMessage = RabbitUtils.GetEncodedMessage(deliverArgs.Body.ToArray());
+            string receivedMessage = RabbitUtils.GetDecodedMessage(deliverArgs.Body.ToArray());
 
             OnMessageReceived?.Invoke(this, receivedMessage);
         }
