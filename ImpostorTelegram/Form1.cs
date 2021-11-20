@@ -22,12 +22,12 @@ namespace ImpostorTelegram
 
         private void HandleMessageReceived(object sender, string e)
         {
-            ChatReceiver.Invoke((Action) (() => { ChatReceiver.Text = e; }));
+            //ChatReceiver.Invoke((Action) (() => { ChatReceiver.Text = e; }));
         }
 
         private void SendMessage_Button_Click(object sender, EventArgs e)
         {
-            m_Sender.SendSimpleMessage(ChatText.Text);                    
+
         }
 
         private void LoadImage_Button_Click(object sender, EventArgs e)
@@ -45,7 +45,7 @@ namespace ImpostorTelegram
                 Stream fileStream = openFileDialog.OpenFile();
                                   
                 byte[] imageBytes = RabbitUtils.CreateEncodedImage(Image.FromFile(filePath));
-                                
+
             }    
         }
 

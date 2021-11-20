@@ -58,6 +58,14 @@ namespace ImpostorTelegram
             channel.QueueDeclare(queue: "hello", durable: false, exclusive: false, autoDelete: false, null);
             channel.BasicPublish(exchange: "", "hello", null, decodedMessage);
         }
+
+        public static byte[] PrepareMessage(EMessageType messageType, byte[] convertedMessage)
+        {
+            byte[] messageTypeByteArray = new byte[] { (byte)messageType };
+            convertedMessage = convertedMessage.Concat(messageTypeByteArray).ToArray();
+
+            return convertedMessage;
+        }
     }
 
     public enum EMessageType
