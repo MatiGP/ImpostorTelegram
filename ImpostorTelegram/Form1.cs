@@ -20,16 +20,13 @@ namespace ImpostorTelegram
         private Panel AppMainPanel, WelcomePanel;
         TextBox NameTextBox, SurnameTextBox;
         TableLayoutPanel MessegesLayoutPanel;
+       
+
         Color mainBackgroundColor = Color.FromArgb(255, 109, 109, 109);
        
         public ImpostorTelegram()
         {
             InitializeComponent();
-
-            m_Receiver = new Receiver();
-            m_Sender = new Sender();
-
-            m_Receiver.OnMessageReceived += HandleMessageReceived;
         }
         void OnFirstLaunch()
         {
@@ -43,11 +40,7 @@ namespace ImpostorTelegram
         {
             AppMainPanel.Visible = false;
         }
-        private void HandleMessageReceived(object sender, string e)
-        {
-            //ChatReceiver.Invoke(new Action(() => { ChatReceiver.Text = e; }));
-        }
-
+     
         private void SendMessage_Button_Click(object sender, EventArgs e)
         {
             //m_Sender.SendMessage(ChatText.Text);
@@ -55,6 +48,7 @@ namespace ImpostorTelegram
 
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
+            
             #region Form1Settings
             MinimumSize = new Size(400, 600);
             #endregion
@@ -180,6 +174,7 @@ namespace ImpostorTelegram
             #endregion
 
             OnFirstLaunch();
+            
         }
 
         private void OnCreateButtonClick(object sender, EventArgs e)
@@ -188,11 +183,43 @@ namespace ImpostorTelegram
             {
                 WelcomePanel.Visible = false;
                 AppMainPanel.Visible = true;
+
+                SetUpConnections();
+                BindEvents();
             }
             else
             {
                 MessageBox.Show("Your Name and Surname can't be null");
             }
         }
+
+        private void SetUpConnections()
+        {
+            m_Receiver = new Receiver();
+            m_Sender = new Sender(NameTextBox.Text, SurnameTextBox.Text);         
+        }
+
+        private void BindEvents()
+        {
+            
+        }
+
+
+        private void Button_SendMessage_Click(object sender, EventArgs e)
+        {
+            m_Sender.SendTextMessage(textBox1.Text);
+        }
+
+        private void AddTextRow(string userName, string messageText)
+        {           
+            ChatReceiver.Invoke(new Action(() => {
+                ChatReceiver.RowCount++;
+                ChatReceiver.Controls.Add(new Label() { Text = messageText }, 1, ChatReceiver.RowCount - 1);
+                ChatReceiver.Controls.Container.BackColor = Constants.RECEIVED_MESSAGE_BACKGROUND_COLOR;
+            }));
+            
+        }
+
+
     }
 }

@@ -33,9 +33,10 @@ namespace ImpostorTelegram
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.ChatReceiver = new System.Windows.Forms.TableLayoutPanel();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.Button_SendMessage = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -69,39 +70,44 @@ namespace ImpostorTelegram
             this.tableLayoutPanel2.Size = new System.Drawing.Size(200, 100);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
-            // button1
+            // ChatReceiver
             // 
-            this.button1.Location = new System.Drawing.Point(12, 471);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.ChatReceiver.ColumnCount = 1;
+            this.ChatReceiver.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ChatReceiver.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ChatReceiver.Location = new System.Drawing.Point(351, 44);
+            this.ChatReceiver.Name = "ChatReceiver";
+            this.ChatReceiver.RowCount = 2;
+            this.ChatReceiver.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10.08902F));
+            this.ChatReceiver.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 89.91098F));
+            this.ChatReceiver.Size = new System.Drawing.Size(486, 337);
+            this.ChatReceiver.TabIndex = 0;
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(13, 442);
+            this.textBox1.Location = new System.Drawing.Point(27, 485);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(74, 23);
+            this.textBox1.Size = new System.Drawing.Size(100, 23);
             this.textBox1.TabIndex = 1;
             // 
-            // label1
+            // Button_SendMessage
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 345);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 15);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
+            this.Button_SendMessage.Location = new System.Drawing.Point(149, 485);
+            this.Button_SendMessage.Name = "Button_SendMessage";
+            this.Button_SendMessage.Size = new System.Drawing.Size(75, 23);
+            this.Button_SendMessage.TabIndex = 4;
+            this.Button_SendMessage.Text = "Send";
+            this.Button_SendMessage.UseVisualStyleBackColor = true;
+            this.Button_SendMessage.Click += new System.EventHandler(this.Button_SendMessage_Click);
             // 
             // ImpostorTelegram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(862, 561);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Button_SendMessage);
             this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.ChatReceiver);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImpostorTelegram";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -120,9 +126,10 @@ namespace ImpostorTelegram
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TableLayoutPanel ChatReceiver;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button Button_SendMessage;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 
