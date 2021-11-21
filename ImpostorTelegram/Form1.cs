@@ -26,7 +26,6 @@ namespace ImpostorTelegram
        
         public ImpostorTelegram()
         {
-            InitializeComponent();
         }
         void OnFirstLaunch()
         {
@@ -201,25 +200,19 @@ namespace ImpostorTelegram
 
         private void BindEvents()
         {
-            
+            m_Receiver.OnMessageReceived += HandleMessageReceived;
         }
 
-
-        private void Button_SendMessage_Click(object sender, EventArgs e)
+        private void HandleMessageReceived(object sender, Message e)
         {
-            m_Sender.SendTextMessage(textBox1.Text);
+            AddRow(e, e.Author == m_Sender.User);
         }
 
-        private void AddTextRow(string userName, string messageText)
+        private void AddRow(Message message, bool isAuthor)
         {           
-            ChatReceiver.Invoke(new Action(() => {
-                ChatReceiver.RowCount++;
-                ChatReceiver.Controls.Add(new Label() { Text = messageText }, 1, ChatReceiver.RowCount - 1);
-                ChatReceiver.Controls.Container.BackColor = Constants.RECEIVED_MESSAGE_BACKGROUND_COLOR;
-            }));
-            
+            // 1) Dwa wiersze
+            // 2) Jeden => author, drugi => treść
+            // 3) Jeden + Drugi => ma mieć kolor wysłania jeśli isAuthor
         }
-
-
     }
 }
