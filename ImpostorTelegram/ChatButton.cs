@@ -17,7 +17,8 @@ namespace ImpostorTelegram
         string _Name;
         string Surname;
         Color BaseButtonBackColor = Color.Transparent;
-        Color HoverButtonBackColor = Color.DarkGray;
+        Color HoverButtonBackColor = Color.FromArgb(255, 70, 72, 102);
+        Color fontColor = Color.White;
         public ChatButton()
         {
             OnButtonCreate();
@@ -64,6 +65,7 @@ namespace ImpostorTelegram
             UserName.BackColor = Color.Transparent;
             UserName.AutoSize = true;
             UserName.Padding = new Padding(100, 10, 5, 5);
+            UserName.ForeColor = fontColor;
             Controls.Add(UserAvatar);
             Controls.Add(UserName);
 
