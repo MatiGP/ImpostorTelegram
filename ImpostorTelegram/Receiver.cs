@@ -20,6 +20,8 @@ namespace ImpostorTelegram
         {
             m_Channel = RabbitUtils.CreateConnection();
 
+            
+
             m_Channel.QueueDeclare(queue: "hello",
                                  durable: false,
                                  exclusive: false,

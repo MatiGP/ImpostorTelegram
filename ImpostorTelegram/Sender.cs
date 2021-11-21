@@ -22,6 +22,7 @@ namespace ImpostorTelegram
             m_Channel = RabbitUtils.CreateConnection();
             m_UserName = name;
             m_UserSurname = surname;
+            
         }
 
         public void SendTextMessage(string message)

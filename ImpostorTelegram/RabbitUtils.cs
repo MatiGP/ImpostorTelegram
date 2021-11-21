@@ -21,10 +21,13 @@ namespace ImpostorTelegram
                 HostName = "localhost"
             };
 
-            IConnection connection = connectionFactory.CreateConnection(connectionFactory.ClientProvidedName);
-            return connection.CreateModel();        
+            IConnection connection = connectionFactory.CreateConnection();
+            return connection.CreateModel();
+            
         }
         
+        
+
         public static byte[] CreateEncodedMessage(string message)
         {
             return Encoding.UTF8.GetBytes(message);
