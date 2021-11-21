@@ -76,6 +76,31 @@ namespace ImpostorTelegram
                                  body: body);
         }
 
+        public void SendSoundMessage(string pathToSound)
+        {
+            m_Channel.QueueDeclare(queue: "hello",
+                                 durable: false,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+            Message mess = new Message()
+            {
+                Author = $"{m_UserName} {m_UserSurname}",
+                MessageText = RabbitUtils.CreateEncodedSound(pathToSound),
+                MessageType = EMessageType.Sound
+            };
+
+            string stringMess = JsonConvert.SerializeObject(mess);
+
+            byte[] body = RabbitUtils.CreateEncodedMessage(stringMess);
+
+            m_Channel.BasicPublish(exchange: "",
+                                 routingKey: "hello",
+                                 basicProperties: null,
+                                 body: body);
+        }
+
     }
     public struct Message
     {
