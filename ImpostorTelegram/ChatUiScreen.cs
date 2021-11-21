@@ -11,6 +11,8 @@ namespace ImpostorTelegram
 {
     class ChatUiScreen : TableLayoutPanel
     {
+        public event EventHandler<string> OnTextMessageSent;
+
         public static ChatUiScreen Instance;
         private Label userName;
         PictureBox backIcon;
@@ -148,7 +150,7 @@ namespace ImpostorTelegram
 
         private void sendIconClick(object sender, EventArgs e)
         {
-            MessageBox.Show("brak implemenacji");
+            OnTextMessageSent?.Invoke(this, typeMessageUiTextbox.Text);
         }
 
         private void mouseLeave(object sender, EventArgs e)
@@ -167,10 +169,21 @@ namespace ImpostorTelegram
             MessagesListScreen.Instance.Visible = true;
         }
 
-        public void openChat(string name)
+        public void OpenChat(string name)
         {
             userName.Text = name;
             Visible = true;
+        }
+
+        public void ShowReceivedMessage(Message receivedMessage, Label label)
+        {
+            string receiveFormat = "{0} : {1}";
+
+            label.Invoke(new Action(() =>
+            {
+                label.Text = string.Format(receiveFormat, receivedMessage.Author, RabbitUtils.GetDecodedString(receivedMessage.MessageText));
+            }));
+            
         }
     }
 }

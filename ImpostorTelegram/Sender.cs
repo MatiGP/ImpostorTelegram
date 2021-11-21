@@ -10,19 +10,16 @@ namespace ImpostorTelegram
 {
     class Sender
     {
-        public string User => $"{m_UserName} {m_UserSurname}";
-     
-        private string m_UserName = "";
-        private string m_UserSurname = "";
+        public string User => m_User;
+
+        private string m_User = string.Empty;
         
         private IModel m_Channel;
 
-        public Sender(string name, string surname)
+        public Sender(string user)
         {
             m_Channel = RabbitUtils.CreateConnection();
-            m_UserName = name;
-            m_UserSurname = surname;
-            
+            m_User = user;
         }
 
         public void SendTextMessage(string message)
@@ -35,7 +32,7 @@ namespace ImpostorTelegram
 
             Message mess = new Message()
             {
-                Author = $"{m_UserName} {m_UserSurname}",
+                Author = m_User,
                 MessageText = RabbitUtils.CreateEncodedMessage(message),
                 MessageType = EMessageType.Text
             };
@@ -61,7 +58,7 @@ namespace ImpostorTelegram
 
             Message mess = new Message()
             {
-                Author = $"{m_UserName} {m_UserSurname}",
+                Author = m_User,
                 MessageText = RabbitUtils.CreateEncodedImage(image),
                 MessageType = EMessageType.Image
             };
@@ -86,7 +83,7 @@ namespace ImpostorTelegram
 
             Message mess = new Message()
             {
-                Author = $"{m_UserName} {m_UserSurname}",
+                Author = m_User,
                 MessageText = RabbitUtils.CreateEncodedSound(pathToSound),
                 MessageType = EMessageType.Sound
             };

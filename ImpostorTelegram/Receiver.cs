@@ -39,7 +39,7 @@ namespace ImpostorTelegram
             byte[] message = deliverArgs.Body.ToArray();
             Message receivedMessage = RabbitUtils.GetDecodedMessage(message);
 
-            OnMessageReceived.Invoke(this, receivedMessage);
+            OnMessageReceived?.Invoke(this, receivedMessage);
         }     
     }
 }

@@ -15,6 +15,13 @@ namespace ImpostorTelegram
 {
     public partial class ImpostorTelegram : Form
     {
+        private Receiver m_Receiver = null;
+        private Sender m_Sender = null;
+
+        private LoginScreen m_LoginScreen = null;
+        private MessagesListScreen m_MessagesListScreen = null;
+        private ChatUiScreen m_ChatUiScreen = null;
+
         public ImpostorTelegram()
         {
             InitializeComponent();
@@ -22,22 +29,47 @@ namespace ImpostorTelegram
         
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
-            #region Form1Settings
             MinimumSize = new Size(400, 600);
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
-            #endregion
 
+            m_LoginScreen = new LoginScreen();          
+            Controls.Add(m_LoginScreen);
 
-            LoginScreen loginScreeen = new LoginScreen();
-            Controls.Add(loginScreeen);
+            m_MessagesListScreen = new MessagesListScreen();
+            Controls.Add(m_MessagesListScreen);
+            m_MessagesListScreen.Visible = false;
 
-            MessagesListScreen messagesListScreen = new MessagesListScreen();
-            Controls.Add(messagesListScreen);
-            messagesListScreen.Visible = false;
+            m_ChatUiScreen = new ChatUiScreen();
+            Controls.Add(m_ChatUiScreen);
 
-            ChatUiScreen chatUiScreen = new ChatUiScreen();
-            Controls.Add(chatUiScreen);
-            chatUiScreen.Visible = false;
+            BindEvents();
+        }
+
+        private void HandleSuccesfulLogin(object sender, string userCreds)
+        {
+            m_Sender = new Sender(userCreds);
+           
+            m_Receiver = new Receiver();
+            m_Receiver.OnMessageReceived += HandleMessageReceived;
+
+            m_ChatUiScreen.Visible = true;
+            m_LoginScreen.Visible = false;
+        }
+
+        private void BindEvents()
+        {
+            m_LoginScreen.OnSuccesfulLogin += HandleSuccesfulLogin;
+            m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;                    
+        }
+
+        private void HandleTextMessageSent(object sender, string e)
+        {
+            m_Sender.SendTextMessage(e);
+        }
+
+        private void HandleMessageReceived(object sender, Message e)
+        {
+            m_ChatUiScreen.ShowReceivedMessage(e, label1);
         }
     }
 }

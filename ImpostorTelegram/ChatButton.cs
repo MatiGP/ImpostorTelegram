@@ -25,7 +25,7 @@ namespace ImpostorTelegram
 
         private void OpenChat(object sender, EventArgs e)
         {
-            ChatUiScreen.Instance.openChat($"{_Name} {Surname}");
+            ChatUiScreen.Instance.OpenChat($"{_Name} {Surname}");
             MessagesListScreen.Instance.Visible = false;
         }
 

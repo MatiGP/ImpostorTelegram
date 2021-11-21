@@ -8,11 +8,12 @@ using System.Windows.Forms;
 
 namespace ImpostorTelegram
 {
-    class LoginScreen : TableLayoutPanel
+    public class LoginScreen : TableLayoutPanel
     {
+        public event EventHandler<string> OnSuccesfulLogin;
+
         public TextBox nameTextBox, surnameTextBox;
-        private Receiver m_Receiver = null;
-        private Sender m_Sender = null;
+
         public LoginScreen()
         {
             Label AppNameLabel, NameLabel, SurnameLabel;
@@ -91,20 +92,13 @@ namespace ImpostorTelegram
         {
             if (nameTextBox.TextLength > 0 && surnameTextBox.TextLength > 0)
             {
-                //MessagesListScreen.Instance.makeVisible();
-                ChatUiScreen.Instance.Visible = true;
-                Visible = false;
-                SetUpConnections();
+                OnSuccesfulLogin?.Invoke(this, $"{nameTextBox.Text} {surnameTextBox.Text}");
             }
             else
             {
                 MessageBox.Show("Your Name and Surname can't be null");
             }
         }
-        private void SetUpConnections()
-        {
-            m_Receiver = new Receiver();
-            m_Sender = new Sender(nameTextBox.Text, surnameTextBox.Text);
-        }
+    
     }
 }

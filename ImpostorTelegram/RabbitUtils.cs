@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace ImpostorTelegram
 {
     public static class RabbitUtils
-    {
+    {     
         public static IModel CreateConnection()
         {
             ConnectionFactory connectionFactory = new ConnectionFactory() {
@@ -66,6 +66,11 @@ namespace ImpostorTelegram
         {
             string jsonSerializedString = Encoding.UTF8.GetString(message, 0, message.Length);
             return JsonConvert.DeserializeObject<Message>(jsonSerializedString);
+        }
+
+        public static string GetDecodedString(byte[] message)
+        {
+            return Encoding.UTF8.GetString(message, 0, message.Length);
         }
     }
 
