@@ -17,7 +17,6 @@ namespace ImpostorTelegram
         string _Name;
         string Surname;
         Color BaseButtonBackColor = Color.Transparent;
-        Color HoverButtonBackColor = Color.FromArgb(255, 70, 72, 102);
         Color fontColor = Color.White;
         public ChatButton()
         {
@@ -26,12 +25,13 @@ namespace ImpostorTelegram
 
         private void OpenChat(object sender, EventArgs e)
         {
-            MessageBox.Show($"Opened chat with {_Name} {Surname}");
+            ChatUiScreen.Instance.openChat($"{_Name} {Surname}");
+            MessagesListScreen.Instance.Visible = false;
         }
 
         private void MouseON(object sender, EventArgs e)
         {
-            BackColor = HoverButtonBackColor;
+            BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
         }
 
         private void MouseOff(object sender, EventArgs e)
