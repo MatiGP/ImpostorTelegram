@@ -31,7 +31,7 @@ namespace ImpostorTelegram
 
         private void MouseON(object sender, EventArgs e)
         {
-            BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
+            BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
         private void MouseOff(object sender, EventArgs e)

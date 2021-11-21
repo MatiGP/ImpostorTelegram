@@ -15,6 +15,7 @@ namespace ImpostorTelegram
         public static Color RECEIVED_MESSAGE_BACKGROUND_COLOR = Color.Beige;
         public static Color FONT_COLOR = Color.White;
         public static Color SECONDARY_BACKGROUND_COLOR = Color.FromArgb(255, 38, 40, 102);
+        public static Color HIGHLIGHT_BACKGROUND_COLOR = Color.FromArgb(255, 46, 156, 202);
         public static Color MAIN_BACKGROUND_COLOR = Color.FromArgb(255, 37, 39, 77);
         public static Font GLOBAL_NORMAL_FONT = new Font("Century Gothic", 14);
         public static Font GLOBAL_BIG_FONT = new Font("Century Gothic Bold", 30);

@@ -19,6 +19,7 @@ namespace ImpostorTelegram
         PictureBox uploadIcon;
         TextBox typeMessageUiTextbox;
         PictureBox sendIcon;
+        FlowLayoutPanel messageScrollUi;
 
         public ChatUiScreen()
         {
@@ -74,12 +75,28 @@ namespace ImpostorTelegram
             statusBarPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));
             statusBarPanel.Controls.Add(backIcon);
 
-            TableLayoutPanel messageScrollUi;
-            messageScrollUi = new TableLayoutPanel();
+            messageScrollUi = new FlowLayoutPanel();
             messageScrollUi.BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
             messageScrollUi.Dock = DockStyle.Fill;
-            messageScrollUi.ColumnCount = 1;
             messageScrollUi.Margin = new Padding(0);
+            messageScrollUi.AutoScroll = true;
+            messageScrollUi.WrapContents = false;
+            messageScrollUi.FlowDirection = FlowDirection.TopDown;
+
+            AddMessageToUi("Norbert Gierczak", "Siema");
+            AddMessageToUi("Jozef Stalinj", "Xd, co ty piedolisz?");
+            AddMessageToUi("Matweusz", "Yo, o co tu chodzi?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprdsfghhhhh dsfghligdhsf dosfghydsgbyfvesrgyfes gdrsfiougderiogf iusagfisagderiyfgsai suhi ajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
+
 
             uploadIcon = new PictureBox();
             uploadIcon.BackColor = Color.Transparent;
@@ -91,8 +108,8 @@ namespace ImpostorTelegram
             uploadIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
             uploadIcon.Click += uploadIconClick;
-            uploadIcon.MouseEnter += mouseEnter;
-            uploadIcon.MouseLeave += mouseLeave;
+            uploadIcon.MouseEnter += UploadMouseEnter;
+            uploadIcon.MouseLeave += UploadMouseLeave;
 
             typeMessageUiTextbox = new TextBox();
             typeMessageUiTextbox.Multiline = true;
@@ -109,8 +126,8 @@ namespace ImpostorTelegram
             sendIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
             sendIcon.Click += sendIconClick;
-            sendIcon.MouseEnter += mouseEnter;
-            sendIcon.MouseLeave += mouseLeave;
+            sendIcon.MouseEnter += sendIconMouseEnter;
+            sendIcon.MouseLeave += sendIconMouseLeave;
 
             TableLayoutPanel sendMessagePanel = new TableLayoutPanel();
             sendMessagePanel.BackColor = Constants.MAIN_BACKGROUND_COLOR;
@@ -135,12 +152,38 @@ namespace ImpostorTelegram
             inMessageUiTablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
             inMessageUiTablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             inMessageUiTablePanel.Controls.Add(statusBarPanel);
-
             inMessageUiTablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10f));
             inMessageUiTablePanel.Controls.Add(messageScrollUi);
             inMessageUiTablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             inMessageUiTablePanel.Controls.Add(sendMessagePanel);
+            inMessageUiTablePanel.AutoScroll = true;
             Controls.Add(inMessageUiTablePanel);
+        }
+
+        private void UploadMouseLeave(object sender, EventArgs e)
+        {
+            uploadIcon.BackColor = Color.Transparent;
+        }
+
+        private void UploadMouseEnter(object sender, EventArgs e)
+        {
+            uploadIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
+        }
+
+        private void sendIconMouseLeave(object sender, EventArgs e)
+        {
+            sendIcon.BackColor = Color.Transparent;
+        }
+
+        private void sendIconMouseEnter(object sender, EventArgs e)
+        {
+            sendIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
+        }
+
+        private void AddMessageToUi(string from, string mess)
+        {
+            MessageUi messageUi = new MessageUi(from, mess);
+            messageScrollUi.Controls.Add(messageUi);
         }
 
         private void uploadIconClick(object sender, EventArgs e)
@@ -160,7 +203,7 @@ namespace ImpostorTelegram
 
         private void mouseEnter(object sender, EventArgs e)
         {
-            backIcon.BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
+            backIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
         private void backIconClick(object sender, EventArgs e)

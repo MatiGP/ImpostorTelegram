@@ -34,6 +34,7 @@ namespace ImpostorTelegram
 
             m_LoginScreen = new LoginScreen();          
             Controls.Add(m_LoginScreen);
+            m_LoginScreen.Visible = false;
 
             m_MessagesListScreen = new MessagesListScreen();
             Controls.Add(m_MessagesListScreen);
@@ -41,6 +42,7 @@ namespace ImpostorTelegram
 
             m_ChatUiScreen = new ChatUiScreen();
             Controls.Add(m_ChatUiScreen);
+            m_ChatUiScreen.Visible = true;
 
             BindEvents();
         }
@@ -52,7 +54,7 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver();
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_ChatUiScreen.Visible = true;
+            m_ChatUiScreen.Visible = false;
             m_LoginScreen.Visible = false;
         }
 
@@ -69,7 +71,7 @@ namespace ImpostorTelegram
 
         private void HandleMessageReceived(object sender, Message e)
         {
-            m_ChatUiScreen.ShowReceivedMessage(e, label1);
+            //m_ChatUiScreen.ShowReceivedMessage(e, label1);
         }
     }
 }
