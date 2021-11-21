@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ImpostorTelegram.MessageUI;
 
 namespace ImpostorTelegram
 {
     class ChatUiScreen : TableLayoutPanel
     {
         public event EventHandler<string> OnTextMessageSent;
+        public event EventHandler<Image> OnImageMessageSent;
 
         public static ChatUiScreen Instance;
         private Label userName;
@@ -81,22 +83,7 @@ namespace ImpostorTelegram
             messageScrollUi.Margin = new Padding(0);
             messageScrollUi.AutoScroll = true;
             messageScrollUi.WrapContents = false;
-            messageScrollUi.FlowDirection = FlowDirection.TopDown;
-
-            AddMessageToUi("Norbert Gierczak", "Siema");
-            AddMessageToUi("Jozef Stalinj", "Xd, co ty piedolisz?");
-            AddMessageToUi("Matweusz", "Yo, o co tu chodzi?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprdsfghhhhh dsfghligdhsf dosfghydsgbyfvesrgyfes gdrsfiougderiogf iusagfisagderiyfgsai suhi ajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-            AddMessageToUi("KAcper", "Yo, nie mam sprajtów?");
-
+            messageScrollUi.FlowDirection = FlowDirection.TopDown;           
 
             uploadIcon = new PictureBox();
             uploadIcon.BackColor = Color.Transparent;
@@ -107,7 +94,7 @@ namespace ImpostorTelegram
             uploadIcon.Location = new Point(5, 5);
             uploadIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            uploadIcon.Click += uploadIconClick;
+            uploadIcon.Click += UploadIconButton;
             uploadIcon.MouseEnter += UploadMouseEnter;
             uploadIcon.MouseLeave += UploadMouseLeave;
 
@@ -180,15 +167,43 @@ namespace ImpostorTelegram
             sendIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
-        private void AddMessageToUi(string from, string mess)
+        public void AddMessageToUi(Message message)
         {
-            MessageUi messageUi = new MessageUi(from, mess);
-            messageScrollUi.Controls.Add(messageUi);
+            MessageUi messageUI = null;
+
+            switch (message.MessageType)
+            {
+                case EMessageType.Text:
+                    messageUI = new TextMessageUI(message);
+                    break;
+                case EMessageType.Sound:
+                    messageUI = new SoundMessageUI(message);
+                    break;
+                case EMessageType.Image:
+                    messageUI = new ImageMessageUI(message);
+                    break;
+            }
+            messageScrollUi.Invoke(new Action(() =>
+            {
+                messageScrollUi.Controls.Add(messageUI);
+            }));
         }
 
-        private void uploadIconClick(object sender, EventArgs e)
+        private void UploadIconButton(object sender, EventArgs e)
         {
-            MessageBox.Show("brak implemenacji 2");
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image Files (*.png)|*.png";
+
+            string filePath = string.Empty;
+            string fileContent = string.Empty;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                filePath = openFileDialog.FileName;
+
+                //Stream fileStream = openFileDialog.OpenFile();
+                OnImageMessageSent?.Invoke(this, Image.FromFile(filePath));
+            }
         }
 
         private void sendIconClick(object sender, EventArgs e)
@@ -216,17 +231,6 @@ namespace ImpostorTelegram
         {
             userName.Text = name;
             Visible = true;
-        }
-
-        public void ShowReceivedMessage(Message receivedMessage, Label label)
-        {
-            string receiveFormat = "{0} : {1}";
-
-            label.Invoke(new Action(() =>
-            {
-                label.Text = string.Format(receiveFormat, receivedMessage.Author, RabbitUtils.GetDecodedString(receivedMessage.MessageText));
-            }));
-            
-        }
+        }      
     }
 }

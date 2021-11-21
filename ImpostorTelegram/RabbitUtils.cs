@@ -14,7 +14,8 @@ using Newtonsoft.Json;
 namespace ImpostorTelegram
 {
     public static class RabbitUtils
-    {     
+    {
+         
         public static IModel CreateConnection()
         {
             ConnectionFactory connectionFactory = new ConnectionFactory() {
@@ -22,8 +23,7 @@ namespace ImpostorTelegram
             };
 
             IConnection connection = connectionFactory.CreateConnection();
-            return connection.CreateModel();
-            
+            return connection.CreateModel();        
         }
         
         

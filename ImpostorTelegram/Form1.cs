@@ -34,7 +34,7 @@ namespace ImpostorTelegram
 
             m_LoginScreen = new LoginScreen();          
             Controls.Add(m_LoginScreen);
-            m_LoginScreen.Visible = false;
+            m_LoginScreen.Visible = true;
 
             m_MessagesListScreen = new MessagesListScreen();
             Controls.Add(m_MessagesListScreen);
@@ -42,7 +42,7 @@ namespace ImpostorTelegram
 
             m_ChatUiScreen = new ChatUiScreen();
             Controls.Add(m_ChatUiScreen);
-            m_ChatUiScreen.Visible = true;
+            m_ChatUiScreen.Visible = false;
 
             BindEvents();
         }
@@ -54,24 +54,30 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver();
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_ChatUiScreen.Visible = false;
+            m_ChatUiScreen.Visible = true;
             m_LoginScreen.Visible = false;
         }
 
         private void BindEvents()
         {
             m_LoginScreen.OnSuccesfulLogin += HandleSuccesfulLogin;
-            m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;                    
+            m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;
+            m_ChatUiScreen.OnImageMessageSent += HandleImageMessageSent;
         }
 
-        private void HandleTextMessageSent(object sender, string e)
+        private void HandleImageMessageSent(object sender, Image imageToSend)
         {
-            m_Sender.SendTextMessage(e);
+            m_Sender.SendImageMessage(imageToSend);
         }
 
-        private void HandleMessageReceived(object sender, Message e)
+        private void HandleTextMessageSent(object sender, string textToSend)
         {
-            //m_ChatUiScreen.ShowReceivedMessage(e, label1);
+            m_Sender.SendTextMessage(textToSend);
+        }
+
+        private void HandleMessageReceived(object sender, Message receivedMessage)
+        {
+            m_ChatUiScreen.AddMessageToUi(receivedMessage);
         }
     }
 }

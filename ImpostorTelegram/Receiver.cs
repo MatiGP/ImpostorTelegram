@@ -20,8 +20,6 @@ namespace ImpostorTelegram
         {
             m_Channel = RabbitUtils.CreateConnection();
 
-            
-
             m_Channel.QueueDeclare(queue: "hello",
                                  durable: false,
                                  exclusive: false,
@@ -31,9 +29,9 @@ namespace ImpostorTelegram
             m_EventingBasicConsumer = new EventingBasicConsumer(m_Channel);
             m_EventingBasicConsumer.Received += HandleMessageReceived;
 
-            m_Channel.BasicConsume("hello", true, m_EventingBasicConsumer);
-            
+            m_Channel.BasicConsume("hello", false, m_EventingBasicConsumer);                  
         }
+
         private void HandleMessageReceived(object sender, BasicDeliverEventArgs deliverArgs)
         {
             byte[] message = deliverArgs.Body.ToArray();

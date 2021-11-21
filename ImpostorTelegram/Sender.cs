@@ -17,7 +17,7 @@ namespace ImpostorTelegram
         private IModel m_Channel;
 
         public Sender(string user)
-        {
+        {          
             m_Channel = RabbitUtils.CreateConnection();
             m_User = user;
         }
@@ -25,10 +25,10 @@ namespace ImpostorTelegram
         public void SendTextMessage(string message)
         {
             m_Channel.QueueDeclare(queue: "hello",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
+                                durable: false,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
 
             Message mess = new Message()
             {
