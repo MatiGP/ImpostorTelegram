@@ -51,7 +51,7 @@ namespace ImpostorTelegram
         {
             m_Sender = new Sender(userCreds);
            
-            m_Receiver = new Receiver();
+            m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
             m_ChatUiScreen.Visible = true;

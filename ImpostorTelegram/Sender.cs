@@ -20,16 +20,20 @@ namespace ImpostorTelegram
         {          
             m_Channel = RabbitUtils.CreateConnection();
             m_User = user;
-        }
 
-        public void SendTextMessage(string message)
-        {
-            m_Channel.QueueDeclare(queue: "hello",
+            m_Channel.QueueDeclare(queue: m_User,
                                 durable: false,
                                 exclusive: false,
                                 autoDelete: false,
                                 arguments: null);
 
+            m_Channel.ExchangeDeclare("exch", "fanout");
+            m_Channel.QueueBind(m_User, "exch", "");
+            
+        }
+
+        public void SendTextMessage(string message)
+        {
             Message mess = new Message()
             {
                 Author = m_User,
@@ -41,8 +45,8 @@ namespace ImpostorTelegram
          
             byte[] body = RabbitUtils.CreateEncodedMessage(stringMess);
 
-            m_Channel.BasicPublish(exchange: "",
-                                 routingKey: "hello",
+            m_Channel.BasicPublish(exchange: "exch",
+                                 routingKey: m_User,
                                  basicProperties: null,
                                  body: body);
            
