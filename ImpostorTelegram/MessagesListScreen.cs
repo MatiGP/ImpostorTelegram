@@ -1,9 +1,8 @@
-﻿using System;
+﻿using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ImpostorTelegram
@@ -11,9 +10,52 @@ namespace ImpostorTelegram
     class MessagesListScreen : TableLayoutPanel
     {
         public static MessagesListScreen Instance;
+        private Dictionary<string, ChatButton> m_MessageButtons = new Dictionary<string, ChatButton>();
+
+        private EventingBasicConsumer m_EventingBasicConsumer = null;
+        private IModel model = null;
+
         public MessagesListScreen()
         {
             Instance = this;
+            model = RabbitUtils.CreateConnection();
+
+            model.QueueDeclare(queue: Constants.DEFAULT_LOBBY_NAME,
+                               durable: false,
+                               exclusive: false,
+                               autoDelete: false,
+                               arguments: null);
+
+            model.ExchangeDeclare(Constants.DEFAULT_LOBBY_EXCHANGE, "fanout");
+            model.QueueBind(Constants.DEFAULT_LOBBY_NAME, Constants.DEFAULT_LOBBY_EXCHANGE, "");
+
+            m_EventingBasicConsumer = new EventingBasicConsumer(model);
+            m_EventingBasicConsumer.Received += HandleMessageReceived;
+
+            model.BasicConsume(Constants.DEFAULT_LOBBY_NAME, false, m_EventingBasicConsumer);
+            
+            SetUpView();
+        }
+
+        private void HandleMessageReceived(object sender, BasicDeliverEventArgs e)
+        {
+            byte[] message = e.Body.ToArray();
+            Message receivedMessage = RabbitUtils.GetDecodedMessage(message);
+
+            switch (receivedMessage.MessageType)
+            {
+                case EMessageType.UserEnter:
+                    AddUserButton(receivedMessage.Author);
+                    break;
+                case EMessageType.UserExit:
+                    RemoveUserButton(receivedMessage.Author);
+                    break;              
+            }
+            
+        }
+
+        private void SetUpView()
+        {
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
             Dock = DockStyle.Top;
             ColumnCount = 1;
@@ -29,31 +71,37 @@ namespace ImpostorTelegram
             RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             Controls.Add(messagesScreenLabel);
             Height += 80;
-
-
-            ////////////////////////////// TYMCZASOWE
-            ChatButton testButton = new ChatButton("Kacper", "Kotecki");
-            testButton.Width = 300;
-            ChatButton testButton2 = new ChatButton("Mateusz", "Świeca");
-            testButton2.Width = 300;
-            testButton2.Location = new Point(0, 80);
-            ChatButton testButton3 = new ChatButton("Lech", "Kaczyński");
-            testButton2.Width = 300;
-            testButton2.Location = new Point(0, 80);
-            RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
-            Controls.Add(testButton);
-            Height += 80;
-            RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
-            Controls.Add(testButton2);
-            Height += 80;
-            RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
-            Controls.Add(testButton3);
-            Height += 80;
-            /////////////////////////////
         }
+
         public void makeVisible()
         {
             Visible = true;
         }
+
+        private void AddUserButton(string userName)
+        {
+            ChatButton newButton = new ChatButton(userName);
+            m_MessageButtons.Add(userName, newButton);
+
+            Invoke(new Action(() =>
+            {
+                RowStyles.Add(new RowStyle(SizeType.Absolute, Constants.MESSAGE_BUTTON_HEIGHT));
+                Controls.Add(newButton);
+                Height += Constants.MESSAGE_BUTTON_HEIGHT;
+            }));          
+        }
+
+        private void RemoveUserButton(string userName)
+        {
+            if (m_MessageButtons.ContainsKey(userName))
+            {
+                ChatButton chatButton = m_MessageButtons[userName];
+                chatButton.Dispose();
+
+                m_MessageButtons.Remove(userName);
+            }
+        }
+
+
     }
 }

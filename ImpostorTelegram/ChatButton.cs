@@ -14,8 +14,7 @@ namespace ImpostorTelegram
     {
         PictureBox UserAvatar;
         Label UserName;
-        string _Name;
-        string Surname;
+        string m_UserCreds;
         Color BaseButtonBackColor = Color.Transparent;
         Color fontColor = Color.White;
         public ChatButton()
@@ -25,7 +24,7 @@ namespace ImpostorTelegram
 
         private void OpenChat(object sender, EventArgs e)
         {
-            ChatUiScreen.Instance.OpenChat($"{_Name} {Surname}");
+            ChatUiScreen.Instance.OpenChat(m_UserCreds);
             MessagesListScreen.Instance.Visible = false;
         }
 
@@ -38,12 +37,11 @@ namespace ImpostorTelegram
         {
             BackColor = BaseButtonBackColor;
         }
-        public ChatButton(string Name, string Surname)
+        public ChatButton(string userCreds)
         {
             OnButtonCreate();
-            this._Name = Name;
-            this.Surname = Surname;
-            UserName.Text = $"{Name} {Surname}";
+            m_UserCreds = userCreds;
+            UserName.Text = m_UserCreds;
         }
         void OnButtonCreate()
         {
@@ -60,7 +58,7 @@ namespace ImpostorTelegram
             BackColor = BaseButtonBackColor;
 
             UserName = new Label();
-            UserName.Text = $"{_Name} {Surname}";
+            UserName.Text = m_UserCreds;
             UserName.Font = new Font("Century Gothic", 14);
             UserName.BackColor = Color.Transparent;
             UserName.AutoSize = true;

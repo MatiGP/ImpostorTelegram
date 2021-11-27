@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
+using Newtonsoft.Json;
 
 namespace ImpostorTelegram
 {
@@ -24,7 +18,7 @@ namespace ImpostorTelegram
 
         public ImpostorTelegram()
         {
-            InitializeComponent();
+            InitializeComponent();           
         }
         
         private void ImpostorTelegram_Load(object sender, EventArgs e)
@@ -49,12 +43,13 @@ namespace ImpostorTelegram
 
         private void HandleSuccesfulLogin(object sender, string userCreds)
         {
-            m_Sender = new Sender(userCreds);
-           
+            m_Sender = new Sender(userCreds);           
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_ChatUiScreen.Visible = true;
+            m_Sender.EnterLobby();
+
+            m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;
         }
 
@@ -79,5 +74,7 @@ namespace ImpostorTelegram
         {
             m_ChatUiScreen.AddMessageToUi(receivedMessage);
         }
+
+
     }
 }

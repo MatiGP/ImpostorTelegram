@@ -15,7 +15,6 @@ namespace ImpostorTelegram
 {
     public static class RabbitUtils
     {
-         
         public static IModel CreateConnection()
         {
             ConnectionFactory connectionFactory = new ConnectionFactory() {
@@ -25,8 +24,6 @@ namespace ImpostorTelegram
             IConnection connection = connectionFactory.CreateConnection();
             return connection.CreateModel();        
         }
-        
-        
 
         public static byte[] CreateEncodedMessage(string message)
         {
@@ -72,13 +69,36 @@ namespace ImpostorTelegram
         {
             return Encoding.UTF8.GetString(message, 0, message.Length);
         }
+
+        public static byte[] LobbyEnteredMessage(string userCreds)
+        {
+            Message message = new Message() { Author = userCreds, MessageType = EMessageType.UserEnter, MessageText = null };
+            string jsonString = JsonConvert.SerializeObject(message);
+
+            return CreateEncodedMessage(jsonString);
+        }
+
+        public static byte[] LobbyExitMessage(string userCreds)
+        {
+            Message message = new Message() { Author = userCreds, MessageType = EMessageType.UserExit, MessageText = null };
+            string jsonString = JsonConvert.SerializeObject(message);
+
+            return CreateEncodedMessage(jsonString);
+        }
     }
 
     public enum EMessageType
     {
+        //DEFAULT
         None = -1,
+
+        //MESSAGES
         Text = 0,
         Image = 1,
-        Sound = 2
+        Sound = 2,
+        
+        //LOGS
+        UserEnter = 3,
+        UserExit = 4
     }   
 }
