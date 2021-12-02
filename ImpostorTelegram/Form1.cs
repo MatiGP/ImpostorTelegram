@@ -48,7 +48,8 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_Sender.EnterLobby();
+            for (int i = 0; i < 3; i++)
+                m_Sender.EnterLobby();
 
             m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;
@@ -78,7 +79,8 @@ namespace ImpostorTelegram
 
         private void ImpostorTelegram_FormClosing(object sender, FormClosingEventArgs e)
         {
-            m_Sender?.LeaveLobby();
+            for(int i = 0; i < 3; i++)
+                m_Sender?.LeaveLobby();
         }
     }
 }
