@@ -84,6 +84,7 @@ namespace ImpostorTelegram
             this.Name = "ImpostorTelegram";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Imporstor Telegram";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImpostorTelegram_FormClosing);
             this.Load += new System.EventHandler(this.ImpostorTelegram_Load);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);

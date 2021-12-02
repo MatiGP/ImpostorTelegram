@@ -21,7 +21,7 @@ namespace ImpostorTelegram
             model = RabbitUtils.CreateConnection();
 
             model.QueueDeclare(queue: Constants.DEFAULT_LOBBY_NAME,
-                               durable: false,
+                               durable: true,
                                exclusive: false,
                                autoDelete: false,
                                arguments: null);
@@ -31,8 +31,30 @@ namespace ImpostorTelegram
 
             m_EventingBasicConsumer = new EventingBasicConsumer(model);
             m_EventingBasicConsumer.Received += HandleMessageReceived;
-
             model.BasicConsume(Constants.DEFAULT_LOBBY_NAME, false, m_EventingBasicConsumer);
+
+            for (int i = 0; i < model.ConsumerCount(Constants.DEFAULT_LOBBY_NAME); i++)
+            {
+                BasicGetResult basicGetResult = model.BasicGet(Constants.DEFAULT_LOBBY_NAME, false);
+
+                if (basicGetResult == null) continue;
+
+                byte[] vs = basicGetResult.Body.ToArray();
+
+                Message m = RabbitUtils.GetDecodedMessage(vs);
+
+                switch (m.MessageType)
+                {
+                    case EMessageType.UserEnter:
+                        AddUserButton(m.Author);
+                        break;
+                    case EMessageType.UserExit:
+                        RemoveUserButton(m.Author);
+                        break;
+                }
+            }
+
+           
             
             SetUpView();
         }
@@ -96,7 +118,11 @@ namespace ImpostorTelegram
             if (m_MessageButtons.ContainsKey(userName))
             {
                 ChatButton chatButton = m_MessageButtons[userName];
-                chatButton.Dispose();
+
+                chatButton.Invoke(new Action(() => {
+                    chatButton.Dispose();
+                    Refresh();
+                }));
 
                 m_MessageButtons.Remove(userName);
             }

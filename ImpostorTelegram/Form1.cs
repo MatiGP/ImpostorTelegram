@@ -24,6 +24,7 @@ namespace ImpostorTelegram
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
             MinimumSize = new Size(400, 600);
+            Size = new Size(400, 600);
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
 
             m_LoginScreen = new LoginScreen();          
@@ -75,6 +76,9 @@ namespace ImpostorTelegram
             m_ChatUiScreen.AddMessageToUi(receivedMessage);
         }
 
-
+        private void ImpostorTelegram_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            m_Sender?.LeaveLobby();
+        }
     }
 }
