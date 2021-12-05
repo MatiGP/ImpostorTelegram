@@ -19,8 +19,10 @@ namespace ImpostorTelegram
         public static Color MAIN_BACKGROUND_COLOR = Color.FromArgb(255, 37, 39, 77);
         public static Font GLOBAL_NORMAL_FONT = new Font("Century Gothic", 14);
         public static Font GLOBAL_BIG_FONT = new Font("Century Gothic Bold", 30);
-        public const string DEFAULT_LOBBY_NAME = "Lobby";
-        public const string DEFAULT_LOBBY_EXCHANGE = "LobbyExchange";
+        public const string DEFAULT_ENTER_LOBBY_NAME = "LobbyEnter";
+        public const string DEFAULT_LOBBY_ENTER_EXCHANGE = "LobbyEnterExchange";
+        public const string DEFAULT_LEAVE_LOBBY_NAME = "LobbyLeave";
+        public const string DEFAULT_LEAVE_LOBBY_EXCHANGE = "LobbyLeaveExchange";
         public const int MESSAGE_BUTTON_HEIGHT = 80;
     }
 }

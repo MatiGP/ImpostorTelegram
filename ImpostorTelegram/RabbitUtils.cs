@@ -19,6 +19,7 @@ namespace ImpostorTelegram
         {
             ConnectionFactory connectionFactory = new ConnectionFactory() {
                 HostName = "localhost"
+                
             };
 
             IConnection connection = connectionFactory.CreateConnection();
@@ -30,11 +31,6 @@ namespace ImpostorTelegram
             return Encoding.UTF8.GetBytes(message);
         }
 
-        public static byte[] CreateEncodedMessage(Message message)
-        {
-            return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(message);
-        }      
-              
         public static byte[] CreateEncodedImage(Image image)
         {
             using(MemoryStream memoryStream = new MemoryStream())

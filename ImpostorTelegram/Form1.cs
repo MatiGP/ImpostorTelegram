@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -23,6 +24,7 @@ namespace ImpostorTelegram
         
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
+
             MinimumSize = new Size(400, 600);
             Size = new Size(400, 600);
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
@@ -39,6 +41,8 @@ namespace ImpostorTelegram
             Controls.Add(m_ChatUiScreen);
             m_ChatUiScreen.Visible = false;
 
+       
+
             BindEvents();
         }
 
@@ -48,7 +52,6 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_Sender.EnterLobby();
 
             m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;
@@ -59,6 +62,21 @@ namespace ImpostorTelegram
             m_LoginScreen.OnSuccesfulLogin += HandleSuccesfulLogin;
             m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;
             m_ChatUiScreen.OnImageMessageSent += HandleImageMessageSent;
+            m_ChatUiScreen.OnBackPressed += HandleChatUIBackPressed;
+            m_MessagesListScreen.OnUserSelected += HandleChatSelected;
+        }
+
+        private void HandleChatSelected(object sender, string userName)
+        {
+            m_ChatUiScreen.OpenChat(userName);
+            m_ChatUiScreen.Visible = true;
+            m_MessagesListScreen.Visible = false;
+        }
+
+        private void HandleChatUIBackPressed(object sender, EventArgs e)
+        {
+            m_ChatUiScreen.Visible = false;
+            m_MessagesListScreen.Visible = true;
         }
 
         private void HandleImageMessageSent(object sender, Image imageToSend)
@@ -78,7 +96,7 @@ namespace ImpostorTelegram
 
         private void ImpostorTelegram_FormClosing(object sender, FormClosingEventArgs e)
         {
-            m_Sender?.LeaveLobby();
-        }
+            //m_LobbyConnectionManager.LeaveLobby(m_Sender.User);
+        }   
     }
 }
