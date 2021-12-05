@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+
 
 namespace ImpostorTelegram
 {
@@ -15,7 +17,7 @@ namespace ImpostorTelegram
         private LoginScreen m_LoginScreen = null;
         private MessagesListScreen m_MessagesListScreen = null;
         private ChatUiScreen m_ChatUiScreen = null;
-        private RoomJoinScreen m_RoomJoinScreen = null;
+        private MessageListUpdater m_MessageListUpdater = null;
 
         public ImpostorTelegram()
         {
@@ -24,6 +26,8 @@ namespace ImpostorTelegram
         
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
+            m_MessageListUpdater = new MessageListUpdater();
+
             MinimumSize = new Size(400, 600);
             Size = new Size(400, 600);
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
@@ -40,10 +44,6 @@ namespace ImpostorTelegram
             Controls.Add(m_ChatUiScreen);
             m_ChatUiScreen.Visible = false;
 
-            m_RoomJoinScreen = new RoomJoinScreen();
-            Controls.Add(m_RoomJoinScreen);
-            m_RoomJoinScreen.Visible = false;
-
             BindEvents();
         }
 
@@ -53,8 +53,10 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            for (int i = 0; i < 3; i++)
-                m_Sender.EnterLobby();
+            m_MessageListUpdater.GetPreviousUsers();
+            m_MessageListUpdater.BindUserQueue(userCreds);
+            m_MessageListUpdater.EnterLobby(userCreds);
+
             m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;
         }
@@ -62,8 +64,27 @@ namespace ImpostorTelegram
         private void BindEvents()
         {
             m_LoginScreen.OnSuccesfulLogin += HandleSuccesfulLogin;
+           
             m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;
             m_ChatUiScreen.OnImageMessageSent += HandleImageMessageSent;
+            m_ChatUiScreen.OnBackPressed += HandleChatUIBackPressed;
+           
+            m_MessagesListScreen.OnUserSelected += HandleChatSelected;
+            
+            m_MessageListUpdater.OnUpdate += m_MessagesListScreen.UpdateUsers;
+        }
+
+        private void HandleChatSelected(object sender, string userName)
+        {
+            m_ChatUiScreen.OpenChat(userName);
+            m_ChatUiScreen.Visible = true;
+            m_MessagesListScreen.Visible = false;
+        }
+
+        private void HandleChatUIBackPressed(object sender, EventArgs e)
+        {
+            m_ChatUiScreen.Visible = false;
+            m_MessagesListScreen.Visible = true;
         }
 
         private void HandleImageMessageSent(object sender, Image imageToSend)
@@ -83,8 +104,7 @@ namespace ImpostorTelegram
 
         private void ImpostorTelegram_FormClosing(object sender, FormClosingEventArgs e)
         {
-            for(int i = 0; i < 3; i++)
-                m_Sender?.LeaveLobby();
-        }
+            //m_LobbyConnectionManager.LeaveLobby(m_Sender.User);
+        }   
     }
 }

@@ -20,7 +20,21 @@ namespace ImpostorTelegram
         public static Font GLOBAL_NORMAL_FONT = new Font("Century Gothic", 14);
         public static Font GLOBAL_BIG_FONT = new Font("Century Gothic Bold", 30);
         public const string DEFAULT_LOBBY_NAME = "Lobby";
-        public const string DEFAULT_LOBBY_EXCHANGE = "LobbyExchange";
+        public const string DEFAULT_LOBBY_EXCHANGE_NAME = "LobbyExch";
         public const int MESSAGE_BUTTON_HEIGHT = 80;
+        public static Dictionary<EExchangeType, string> EXCHANGE_TYPES = new Dictionary<EExchangeType, string>()
+        {
+            { EExchangeType.Fanout, "fanout" },
+            { EExchangeType.Direct, "direct" }
+        };
+        public const string DB_CONNECTION_STRING_FORMAT = "SERVER={0};DATABASE={1};UID={2};PASSWORD={3};";
+
+
+    }
+
+    public enum EExchangeType
+    {
+        Fanout,
+        Direct
     }
 }

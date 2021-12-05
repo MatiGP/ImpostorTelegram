@@ -27,26 +27,12 @@ namespace ImpostorTelegram
                                 autoDelete: false,
                                 arguments: null);
 
+            m_Channel.QueueDeclare($"{m_User}_LobbyListener", true, false, false, null);
+
             m_Channel.ExchangeDeclare("exch", "fanout");
             m_Channel.QueueBind(m_User, "exch", "");                  
         }
-
-        public void EnterLobby()
-        {
-            m_Channel.BasicPublish(Constants.DEFAULT_LOBBY_EXCHANGE,
-                Constants.DEFAULT_LOBBY_NAME,
-                null,
-                RabbitUtils.LobbyEnteredMessage(m_User));
-        }
-
-        public void LeaveLobby()
-        {
-            m_Channel.BasicPublish(Constants.DEFAULT_LOBBY_EXCHANGE,
-                Constants.DEFAULT_LOBBY_NAME,
-                null,
-                RabbitUtils.LobbyExitMessage(m_User));
-        }
-
+      
         public void SendTextMessage(string message)
         {
             Message mess = new Message()

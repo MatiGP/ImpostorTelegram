@@ -12,20 +12,20 @@ namespace ImpostorTelegram
 {
     class ChatUiScreen : TableLayoutPanel
     {
+        public event EventHandler OnBackPressed;
+
         public event EventHandler<string> OnTextMessageSent;
         public event EventHandler<Image> OnImageMessageSent;
 
-        public static ChatUiScreen Instance;
-        private Label userName;
-        PictureBox backIcon;
-        PictureBox uploadIcon;
-        TextBox typeMessageUiTextbox;
-        PictureBox sendIcon;
-        FlowLayoutPanel messageScrollUi;
+        private Label m_UserName;
+        PictureBox m_BackIcon;
+        PictureBox m_UploadIcon;
+        TextBox m_MessageText;
+        PictureBox m_SendIcon;
+        FlowLayoutPanel m_MessageScrollUI;
 
         public ChatUiScreen()
         {
-            Instance = this;
             Dock = DockStyle.Fill;
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
             AutoScroll = true;
@@ -48,73 +48,73 @@ namespace ImpostorTelegram
             UserAvatar.Location = new Point(6, 6);
             UserAvatar.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            userName = new Label();
-            userName.Text = $"Imię i Nazwisko z kim rozmawiasz";
-            userName.Font = Constants.GLOBAL_NORMAL_FONT;
-            userName.BackColor = Color.Transparent;
-            userName.AutoSize = true;
-            userName.Padding = new Padding(20, 30, 5, 5);
-            userName.ForeColor = Constants.FONT_COLOR;
+            m_UserName = new Label();
+            m_UserName.Text = $"Imię i Nazwisko z kim rozmawiasz";
+            m_UserName.Font = Constants.GLOBAL_NORMAL_FONT;
+            m_UserName.BackColor = Color.Transparent;
+            m_UserName.AutoSize = true;
+            m_UserName.Padding = new Padding(20, 30, 5, 5);
+            m_UserName.ForeColor = Constants.FONT_COLOR;
 
-            backIcon = new PictureBox();
-            backIcon.BackColor = Color.Transparent;
+            m_BackIcon = new PictureBox();
+            m_BackIcon.BackColor = Color.Transparent;
             string backIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\Resorces\\back.png");
-            backIcon.Image = Image.FromFile(backIconPath);
-            backIcon.Width = 74;
-            backIcon.Height = 74;
-            backIcon.Location = new Point(6, 6);
-            backIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            m_BackIcon.Image = Image.FromFile(backIconPath);
+            m_BackIcon.Width = 74;
+            m_BackIcon.Height = 74;
+            m_BackIcon.Location = new Point(6, 6);
+            m_BackIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            backIcon.Click += backIconClick;
-            backIcon.MouseEnter += mouseEnter;
-            backIcon.MouseLeave += mouseLeave;
+            m_BackIcon.Click += BackIconClick;
+            m_BackIcon.MouseEnter += OnMouseEnter;
+            m_BackIcon.MouseLeave += OnMouseLeave;
 
 
             statusBarPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));
             statusBarPanel.Controls.Add(UserAvatar);
             statusBarPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10));
-            statusBarPanel.Controls.Add(userName);
+            statusBarPanel.Controls.Add(m_UserName);
             statusBarPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));
-            statusBarPanel.Controls.Add(backIcon);
+            statusBarPanel.Controls.Add(m_BackIcon);
 
-            messageScrollUi = new FlowLayoutPanel();
-            messageScrollUi.BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
-            messageScrollUi.Dock = DockStyle.Fill;
-            messageScrollUi.Margin = new Padding(0);
-            messageScrollUi.AutoScroll = true;
-            messageScrollUi.WrapContents = false;
-            messageScrollUi.FlowDirection = FlowDirection.TopDown;           
+            m_MessageScrollUI = new FlowLayoutPanel();
+            m_MessageScrollUI.BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
+            m_MessageScrollUI.Dock = DockStyle.Fill;
+            m_MessageScrollUI.Margin = new Padding(0);
+            m_MessageScrollUI.AutoScroll = true;
+            m_MessageScrollUI.WrapContents = false;
+            m_MessageScrollUI.FlowDirection = FlowDirection.TopDown;           
 
-            uploadIcon = new PictureBox();
-            uploadIcon.BackColor = Color.Transparent;
+            m_UploadIcon = new PictureBox();
+            m_UploadIcon.BackColor = Color.Transparent;
             string uploadIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\Resorces\\upload.png");
-            uploadIcon.Image = Image.FromFile(uploadIconPath);
-            uploadIcon.Width = 70;
-            uploadIcon.Height = 70;
-            uploadIcon.Location = new Point(5, 5);
-            uploadIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            m_UploadIcon.Image = Image.FromFile(uploadIconPath);
+            m_UploadIcon.Width = 70;
+            m_UploadIcon.Height = 70;
+            m_UploadIcon.Location = new Point(5, 5);
+            m_UploadIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            uploadIcon.Click += UploadIconButton;
-            uploadIcon.MouseEnter += UploadMouseEnter;
-            uploadIcon.MouseLeave += UploadMouseLeave;
+            m_UploadIcon.Click += UploadIconButton;
+            m_UploadIcon.MouseEnter += UploadMouseEnter;
+            m_UploadIcon.MouseLeave += UploadMouseLeave;
 
-            typeMessageUiTextbox = new TextBox();
-            typeMessageUiTextbox.Multiline = true;
-            typeMessageUiTextbox.Dock = DockStyle.Fill;
-            typeMessageUiTextbox.Font = Constants.GLOBAL_NORMAL_FONT;
+            m_MessageText = new TextBox();
+            m_MessageText.Multiline = true;
+            m_MessageText.Dock = DockStyle.Fill;
+            m_MessageText.Font = Constants.GLOBAL_NORMAL_FONT;
 
-            sendIcon = new PictureBox();
-            sendIcon.BackColor = Color.Transparent;
+            m_SendIcon = new PictureBox();
+            m_SendIcon.BackColor = Color.Transparent;
             string sendIconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\Resorces\\send.png");
-            sendIcon.Image = Image.FromFile(sendIconPath);
-            sendIcon.Width = 70;
-            sendIcon.Height = 70;
-            sendIcon.Location = new Point(5, 5);
-            sendIcon.SizeMode = PictureBoxSizeMode.StretchImage;
+            m_SendIcon.Image = Image.FromFile(sendIconPath);
+            m_SendIcon.Width = 70;
+            m_SendIcon.Height = 70;
+            m_SendIcon.Location = new Point(5, 5);
+            m_SendIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
-            sendIcon.Click += sendIconClick;
-            sendIcon.MouseEnter += sendIconMouseEnter;
-            sendIcon.MouseLeave += sendIconMouseLeave;
+            m_SendIcon.Click += sendIconClick;
+            m_SendIcon.MouseEnter += sendIconMouseEnter;
+            m_SendIcon.MouseLeave += sendIconMouseLeave;
 
             TableLayoutPanel sendMessagePanel = new TableLayoutPanel();
             sendMessagePanel.BackColor = Constants.MAIN_BACKGROUND_COLOR;
@@ -124,11 +124,11 @@ namespace ImpostorTelegram
             sendMessagePanel.RowCount = 1;
             sendMessagePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             sendMessagePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));
-            sendMessagePanel.Controls.Add(uploadIcon);
+            sendMessagePanel.Controls.Add(m_UploadIcon);
             sendMessagePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 10));
-            sendMessagePanel.Controls.Add(typeMessageUiTextbox);
+            sendMessagePanel.Controls.Add(m_MessageText);
             sendMessagePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));
-            sendMessagePanel.Controls.Add(sendIcon);
+            sendMessagePanel.Controls.Add(m_SendIcon);
 
             TableLayoutPanel inMessageUiTablePanel;
             inMessageUiTablePanel = new TableLayoutPanel();
@@ -140,7 +140,7 @@ namespace ImpostorTelegram
             inMessageUiTablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             inMessageUiTablePanel.Controls.Add(statusBarPanel);
             inMessageUiTablePanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10f));
-            inMessageUiTablePanel.Controls.Add(messageScrollUi);
+            inMessageUiTablePanel.Controls.Add(m_MessageScrollUI);
             inMessageUiTablePanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             inMessageUiTablePanel.Controls.Add(sendMessagePanel);
             inMessageUiTablePanel.AutoScroll = true;
@@ -149,22 +149,22 @@ namespace ImpostorTelegram
 
         private void UploadMouseLeave(object sender, EventArgs e)
         {
-            uploadIcon.BackColor = Color.Transparent;
+            m_UploadIcon.BackColor = Color.Transparent;
         }
 
         private void UploadMouseEnter(object sender, EventArgs e)
         {
-            uploadIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
+            m_UploadIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
         private void sendIconMouseLeave(object sender, EventArgs e)
         {
-            sendIcon.BackColor = Color.Transparent;
+            m_SendIcon.BackColor = Color.Transparent;
         }
 
         private void sendIconMouseEnter(object sender, EventArgs e)
         {
-            sendIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
+            m_SendIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
         public void AddMessageToUi(Message message)
@@ -183,9 +183,9 @@ namespace ImpostorTelegram
                     messageUI = new ImageMessageUI(message);
                     break;
             }
-            messageScrollUi.Invoke(new Action(() =>
+            m_MessageScrollUI.Invoke(new Action(() =>
             {
-                messageScrollUi.Controls.Add(messageUI);
+                m_MessageScrollUI.Controls.Add(messageUI);
             }));
         }
 
@@ -208,28 +208,28 @@ namespace ImpostorTelegram
 
         private void sendIconClick(object sender, EventArgs e)
         {
-            OnTextMessageSent?.Invoke(this, typeMessageUiTextbox.Text);
+            OnTextMessageSent?.Invoke(this, m_MessageText.Text);
         }
 
-        private void mouseLeave(object sender, EventArgs e)
+        private void OnMouseLeave(object sender, EventArgs e)
         {
-            backIcon.BackColor = Color.Transparent;
+            m_BackIcon.BackColor = Color.Transparent;
         }
 
-        private void mouseEnter(object sender, EventArgs e)
+        private void OnMouseEnter(object sender, EventArgs e)
         {
-            backIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
+            m_BackIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
-        private void backIconClick(object sender, EventArgs e)
+        private void BackIconClick(object sender, EventArgs e)
         {
             Visible = false;
-            MessagesListScreen.Instance.Visible = true;
+            OnBackPressed?.Invoke(this, EventArgs.Empty);
         }
 
         public void OpenChat(string name)
         {
-            userName.Text = name;
+            m_UserName.Text = name;
             Visible = true;
         }      
     }

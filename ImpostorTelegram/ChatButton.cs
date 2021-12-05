@@ -12,6 +12,8 @@ namespace ImpostorTelegram
 {
     class ChatButton : Panel
     {
+        public event EventHandler<string> OnButtonPressed;
+
         PictureBox UserAvatar;
         Label UserName;
         string m_UserCreds;
@@ -24,8 +26,7 @@ namespace ImpostorTelegram
 
         private void OpenChat(object sender, EventArgs e)
         {
-            ChatUiScreen.Instance.OpenChat(m_UserCreds);
-            MessagesListScreen.Instance.Visible = false;
+            OnButtonPressed?.Invoke(this, m_UserCreds);
         }
 
         private void MouseON(object sender, EventArgs e)
