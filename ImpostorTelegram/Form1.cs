@@ -16,6 +16,7 @@ namespace ImpostorTelegram
         private LoginScreen m_LoginScreen = null;
         private MessagesListScreen m_MessagesListScreen = null;
         private ChatUiScreen m_ChatUiScreen = null;
+        private MessageListUpdater m_MessageListUpdater = null;
 
         public ImpostorTelegram()
         {
@@ -24,6 +25,7 @@ namespace ImpostorTelegram
         
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
+            m_MessageListUpdater = new MessageListUpdater();
 
             MinimumSize = new Size(400, 600);
             Size = new Size(400, 600);
@@ -41,8 +43,6 @@ namespace ImpostorTelegram
             Controls.Add(m_ChatUiScreen);
             m_ChatUiScreen.Visible = false;
 
-       
-
             BindEvents();
         }
 
@@ -52,6 +52,9 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
+            m_MessageListUpdater.GetPrevUsers();
+            m_MessageListUpdater.BindUserQueue(userCreds);
+            m_MessageListUpdater.Publish(userCreds);
 
             m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;
@@ -60,10 +63,14 @@ namespace ImpostorTelegram
         private void BindEvents()
         {
             m_LoginScreen.OnSuccesfulLogin += HandleSuccesfulLogin;
+           
             m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;
             m_ChatUiScreen.OnImageMessageSent += HandleImageMessageSent;
             m_ChatUiScreen.OnBackPressed += HandleChatUIBackPressed;
+           
             m_MessagesListScreen.OnUserSelected += HandleChatSelected;
+            
+            m_MessageListUpdater.OnUpdate += m_MessagesListScreen.UpdateUsers;
         }
 
         private void HandleChatSelected(object sender, string userName)

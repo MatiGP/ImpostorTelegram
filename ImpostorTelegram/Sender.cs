@@ -27,6 +27,8 @@ namespace ImpostorTelegram
                                 autoDelete: false,
                                 arguments: null);
 
+            m_Channel.QueueDeclare($"{m_User}_LobbyListener", true, false, false, null);
+
             m_Channel.ExchangeDeclare("exch", "fanout");
             m_Channel.QueueBind(m_User, "exch", "");                  
         }
