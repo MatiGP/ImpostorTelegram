@@ -27,6 +27,7 @@ namespace ImpostorTelegram
             { EExchangeType.Fanout, "fanout" },
             { EExchangeType.Direct, "direct" }
         };
+        public const string DB_CONNECTION_STRING_FORMAT = "SERVER={0};DATABASE={1};UID={2};PASSWORD={3};";
 
 
     }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
+
 namespace ImpostorTelegram
 {
     public partial class ImpostorTelegram : Form
@@ -52,9 +53,9 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_MessageListUpdater.GetPrevUsers();
+            m_MessageListUpdater.GetPreviousUsers();
             m_MessageListUpdater.BindUserQueue(userCreds);
-            m_MessageListUpdater.Publish(userCreds);
+            m_MessageListUpdater.EnterLobby(userCreds);
 
             m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;

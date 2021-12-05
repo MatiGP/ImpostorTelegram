@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace ImpostorTelegram
 {
     class MessagesListScreen : TableLayoutPanel
     {
-        private IModel model;
         public event EventHandler<string> OnUserSelected;
 
         private Dictionary<string, ChatButton> m_MessageButtons = new Dictionary<string, ChatButton>();
