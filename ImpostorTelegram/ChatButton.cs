@@ -45,7 +45,7 @@ namespace ImpostorTelegram
         }
         void OnButtonCreate()
         {
-            Dock = DockStyle.Fill;
+            Dock = DockStyle.Top;
             Margin = new Padding(0);
             UserAvatar = new PictureBox();
             UserAvatar.BackColor = Color.Transparent;

@@ -14,6 +14,7 @@ namespace ImpostorTelegram
 
         private EventingBasicConsumer m_EventingBasicConsumer = null;
         private IModel model = null;
+        private TableLayoutPanel onlineUsersScrollUi = null;
 
         public MessagesListScreen()
         {
@@ -53,9 +54,6 @@ namespace ImpostorTelegram
                         break;
                 }
             }
-
-           
-            
             SetUpView();
         }
 
@@ -78,11 +76,13 @@ namespace ImpostorTelegram
 
         private void SetUpView()
         {
+            Dock = DockStyle.Fill;
+
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
-            Dock = DockStyle.Top;
             ColumnCount = 1;
             Height = 6;
             ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+
             Label messagesScreenLabel = new Label();
             messagesScreenLabel.Text = "Impostor Telegram";
             messagesScreenLabel.Font = Constants.GLOBAL_BIG_FONT;
@@ -92,12 +92,27 @@ namespace ImpostorTelegram
             messagesScreenLabel.ForeColor = Constants.FONT_COLOR;
             RowStyles.Add(new RowStyle(SizeType.Absolute, 80F));
             Controls.Add(messagesScreenLabel);
-            Height += 80;
-        }
 
-        public void makeVisible()
-        {
-            Visible = true;
+            onlineUsersScrollUi = new TableLayoutPanel();
+            onlineUsersScrollUi.BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
+            onlineUsersScrollUi.Dock = DockStyle.Fill;
+            onlineUsersScrollUi.Margin = new Padding(0);
+            onlineUsersScrollUi.AutoScroll = true;
+            onlineUsersScrollUi.AutoSize = true;
+            onlineUsersScrollUi.BackColor = Constants.MAIN_BACKGROUND_COLOR;
+
+
+            RowStyles.Add(new RowStyle(SizeType.Percent, 80));
+            Controls.Add(onlineUsersScrollUi);
+
+            Panel bottomGroupPanel = new Panel();
+            bottomGroupPanel.Dock = DockStyle.Fill;
+
+            RowStyles.Add(new RowStyle(SizeType.Absolute, 80));
+            Controls.Add(bottomGroupPanel);
+
+            GroupButton groupButton = new GroupButton();
+            bottomGroupPanel.Controls.Add(groupButton);
         }
 
         private void AddUserButton(string userName)
@@ -105,11 +120,9 @@ namespace ImpostorTelegram
             ChatButton newButton = new ChatButton(userName);
             m_MessageButtons.Add(userName, newButton);
 
-            Invoke(new Action(() =>
+            onlineUsersScrollUi.Invoke(new Action(() =>
             {
-                RowStyles.Add(new RowStyle(SizeType.Absolute, Constants.MESSAGE_BUTTON_HEIGHT));
-                Controls.Add(newButton);
-                Height += Constants.MESSAGE_BUTTON_HEIGHT;
+                onlineUsersScrollUi.Controls.Add(newButton);
             }));          
         }
 
@@ -127,7 +140,5 @@ namespace ImpostorTelegram
                 m_MessageButtons.Remove(userName);
             }
         }
-
-
     }
 }

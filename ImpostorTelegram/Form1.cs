@@ -15,6 +15,7 @@ namespace ImpostorTelegram
         private LoginScreen m_LoginScreen = null;
         private MessagesListScreen m_MessagesListScreen = null;
         private ChatUiScreen m_ChatUiScreen = null;
+        private RoomJoinScreen m_RoomJoinScreen = null;
 
         public ImpostorTelegram()
         {
@@ -39,6 +40,10 @@ namespace ImpostorTelegram
             Controls.Add(m_ChatUiScreen);
             m_ChatUiScreen.Visible = false;
 
+            m_RoomJoinScreen = new RoomJoinScreen();
+            Controls.Add(m_RoomJoinScreen);
+            m_RoomJoinScreen.Visible = false;
+
             BindEvents();
         }
 
@@ -50,7 +55,6 @@ namespace ImpostorTelegram
 
             for (int i = 0; i < 3; i++)
                 m_Sender.EnterLobby();
-
             m_MessagesListScreen.Visible = true;
             m_LoginScreen.Visible = false;
         }

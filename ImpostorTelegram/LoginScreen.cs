@@ -57,15 +57,14 @@ namespace ImpostorTelegram
 
             Button CreateAccountButton = new Button();
             CreateAccountButton.Text = "Create";
-            CreateAccountButton.Font = Constants.GLOBAL_NORMAL_FONT;
             CreateAccountButton.AutoSize = false;
             CreateAccountButton.Anchor = AnchorStyles.Top;
             CreateAccountButton.Click += OnCreateButtonClick;
             CreateAccountButton.Width = 130;
             CreateAccountButton.Height = 40;
-            CreateAccountButton.FlatStyle = FlatStyle.Flat;
-            CreateAccountButton.FlatAppearance.BorderSize = 0;
-            CreateAccountButton.BackColor = Color.FromArgb(255, 166, 166, 166);
+            CreateAccountButton.Font = Constants.GLOBAL_NORMAL_FONT;
+            CreateAccountButton.ForeColor = Constants.FONT_COLOR;
+            CreateAccountButton.BackColor = Constants.SECONDARY_BACKGROUND_COLOR;
 
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
             Padding = new Padding(0, 100, 0, 100);
