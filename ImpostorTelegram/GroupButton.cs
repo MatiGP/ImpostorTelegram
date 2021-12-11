@@ -10,6 +10,8 @@ namespace ImpostorTelegram
 {
     class GroupButton : Button
     {
+        public event EventHandler OnGroupButtonPressed;
+
         public GroupButton()
         {
             Dock = DockStyle.Fill;
@@ -25,8 +27,10 @@ namespace ImpostorTelegram
 
         private void GroupButton_Click(object sender, EventArgs e)
         {
-            MessagesListScreen.Instance.Visible = false;
-            RoomJoinScreen.Instance.Visible = true;
+            OnGroupButtonPressed.Invoke(this, EventArgs.Empty);
+
+            //MessagesListScreen.Instance.Visible = false;
+            //RoomJoinScreen.Instance.Visible = true;
         }
     }
 }

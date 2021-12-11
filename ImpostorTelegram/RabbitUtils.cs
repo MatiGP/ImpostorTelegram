@@ -15,6 +15,7 @@ namespace ImpostorTelegram
 {
     public static class RabbitUtils
     {
+
         public static IModel CreateConnection()
         {
             ConnectionFactory connectionFactory = new ConnectionFactory() {
@@ -81,6 +82,19 @@ namespace ImpostorTelegram
 
             return CreateEncodedMessage(jsonString);
         }
+
+        public static void DeclareQueueExchange(IModel channel, string exchangeName, string type)
+        {
+            channel.ExchangeDeclare(exchangeName, type, false, false, null);
+        }
+
+        public static void BindExchangeToQueue(IModel channel, string exchangeName, string queueName)
+        {
+            channel.QueueBind(queueName, exchangeName, "", null);
+           
+        }
+
+
     }
 
     public enum EMessageType

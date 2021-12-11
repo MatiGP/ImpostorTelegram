@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 using System.Windows.Forms;
 using ImpostorTelegram.MessageUI;
+using MySql.Data.MySqlClient;
 
 namespace ImpostorTelegram
 {
@@ -24,8 +22,11 @@ namespace ImpostorTelegram
         PictureBox m_SendIcon;
         FlowLayoutPanel m_MessageScrollUI;
 
+        private string m_ChatName = null;
+
         public ChatUiScreen()
         {
+            #region Design Stuff
             Dock = DockStyle.Fill;
             BackColor = Constants.MAIN_BACKGROUND_COLOR;
             AutoScroll = true;
@@ -113,8 +114,8 @@ namespace ImpostorTelegram
             m_SendIcon.SizeMode = PictureBoxSizeMode.StretchImage;
 
             m_SendIcon.Click += sendIconClick;
-            m_SendIcon.MouseEnter += sendIconMouseEnter;
-            m_SendIcon.MouseLeave += sendIconMouseLeave;
+            m_SendIcon.MouseEnter += SendIconMouseEnter;
+            m_SendIcon.MouseLeave += SendIconMouseLeave;
 
             TableLayoutPanel sendMessagePanel = new TableLayoutPanel();
             sendMessagePanel.BackColor = Constants.MAIN_BACKGROUND_COLOR;
@@ -145,6 +146,9 @@ namespace ImpostorTelegram
             inMessageUiTablePanel.Controls.Add(sendMessagePanel);
             inMessageUiTablePanel.AutoScroll = true;
             Controls.Add(inMessageUiTablePanel);
+
+            #endregion
+
         }
 
         private void UploadMouseLeave(object sender, EventArgs e)
@@ -157,12 +161,12 @@ namespace ImpostorTelegram
             m_UploadIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
 
-        private void sendIconMouseLeave(object sender, EventArgs e)
+        private void SendIconMouseLeave(object sender, EventArgs e)
         {
             m_SendIcon.BackColor = Color.Transparent;
         }
 
-        private void sendIconMouseEnter(object sender, EventArgs e)
+        private void SendIconMouseEnter(object sender, EventArgs e)
         {
             m_SendIcon.BackColor = Constants.HIGHLIGHT_BACKGROUND_COLOR;
         }
@@ -195,7 +199,6 @@ namespace ImpostorTelegram
             openFileDialog.Filter = "Image Files (*.png)|*.png";
 
             string filePath = string.Empty;
-            string fileContent = string.Empty;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -231,6 +234,27 @@ namespace ImpostorTelegram
         {
             m_UserName.Text = name;
             Visible = true;
-        }      
+            m_ChatName = name;
+            LoadPreviousMessages(name);
+        }
+        
+        private void LoadPreviousMessages(string ID)
+        {
+            m_MessageScrollUI.Invoke(new Action(() =>
+            {
+                m_MessageScrollUI.Controls.Clear();
+            }));
+
+            MySqlDataReader previousMessages = DatabaseUtils.GetPreviousMessages(ID);
+
+            while (previousMessages.Read())
+            {
+                Message mess = JsonConvert.DeserializeObject<Message>(previousMessages.GetString(0));
+                AddMessageToUi(mess);
+            }
+
+            previousMessages.Close();
+            previousMessages.Dispose();
+        }
     }
 }

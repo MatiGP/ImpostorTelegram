@@ -15,9 +15,13 @@ namespace ImpostorTelegram
         private Sender m_Sender = null;
 
         private LoginScreen m_LoginScreen = null;
-        private MessagesListScreen m_MessagesListScreen = null;
+        private LobbyList m_LobbyList = null;
         private ChatUiScreen m_ChatUiScreen = null;
-        private MessageListUpdater m_MessageListUpdater = null;
+        private LobbyListUpdater m_LobbyListUpdater = null;
+        private RoomJoinScreen m_RoomJoinScreen = null;
+        private DatabaseUtils m_DatabaseUtils = null;
+
+        private string m_CurrentRoomChat = null;
 
         public ImpostorTelegram()
         {
@@ -26,7 +30,9 @@ namespace ImpostorTelegram
         
         private void ImpostorTelegram_Load(object sender, EventArgs e)
         {
-            m_MessageListUpdater = new MessageListUpdater();
+            m_DatabaseUtils = new DatabaseUtils();
+
+            m_LobbyListUpdater = new LobbyListUpdater();
 
             MinimumSize = new Size(400, 600);
             Size = new Size(400, 600);
@@ -36,13 +42,17 @@ namespace ImpostorTelegram
             Controls.Add(m_LoginScreen);
             m_LoginScreen.Visible = true;
 
-            m_MessagesListScreen = new MessagesListScreen();
-            Controls.Add(m_MessagesListScreen);
-            m_MessagesListScreen.Visible = false;
+            m_LobbyList = new LobbyList();
+            Controls.Add(m_LobbyList);
+            m_LobbyList.Visible = false;
 
             m_ChatUiScreen = new ChatUiScreen();
             Controls.Add(m_ChatUiScreen);
             m_ChatUiScreen.Visible = false;
+
+            m_RoomJoinScreen = new RoomJoinScreen();
+            Controls.Add(m_RoomJoinScreen);
+            m_RoomJoinScreen.Visible = false;
 
             BindEvents();
         }
@@ -53,11 +63,13 @@ namespace ImpostorTelegram
             m_Receiver = new Receiver(userCreds);
             m_Receiver.OnMessageReceived += HandleMessageReceived;
 
-            m_MessageListUpdater.GetPreviousUsers();
-            m_MessageListUpdater.BindUserQueue(userCreds);
-            m_MessageListUpdater.EnterLobby(userCreds);
+            m_LobbyList.SaveUserName(userCreds);
 
-            m_MessagesListScreen.Visible = true;
+            m_LobbyListUpdater.GetPreviousUsers();
+            m_LobbyListUpdater.BindUserQueue(userCreds);
+            m_LobbyListUpdater.EnterLobby(userCreds);
+
+            m_LobbyList.Visible = true;
             m_LoginScreen.Visible = false;
         }
 
@@ -69,32 +81,68 @@ namespace ImpostorTelegram
             m_ChatUiScreen.OnImageMessageSent += HandleImageMessageSent;
             m_ChatUiScreen.OnBackPressed += HandleChatUIBackPressed;
            
-            m_MessagesListScreen.OnUserSelected += HandleChatSelected;
+            m_LobbyList.OnUserSelected += HandleChatSelected;
             
-            m_MessageListUpdater.OnUpdate += m_MessagesListScreen.UpdateUsers;
+            m_LobbyListUpdater.OnUpdate += m_LobbyList.UpdateUsers;
+            m_LobbyList.OnGroupButtonPressed += HandleGroupButtonPressed;
+
+            m_RoomJoinScreen.OnRoomCreated += HandleRoomCreated;
         }
 
-        private void HandleChatSelected(object sender, string userName)
+        private void HandleGroupButtonPressed(object sender, EventArgs e)
         {
-            m_ChatUiScreen.OpenChat(userName);
+            m_LobbyList.Visible = false;
+            m_RoomJoinScreen.Visible = true;
+        }
+
+        private void HandleRoomCreated(object sender, string roomName)
+        {
+            RabbitUtils.DeclareQueueExchange(m_Sender.Channel, roomName, Constants.EXCHANGE_TYPES[EExchangeType.Fanout]);
+            RabbitUtils.BindExchangeToQueue(m_Sender.Channel, roomName, m_Sender.User);
+            m_ChatUiScreen.OpenChat(roomName);
+            m_CurrentRoomChat = roomName;
+
+        }
+
+        private void HandleChatSelected(object sender, string targetUserName)
+        {
+            string chatRoomName = string.Empty;            
+            if(DatabaseUtils.Is1To1ChatRoomCreated(m_Sender.User, targetUserName, out chatRoomName))
+            {
+                RabbitUtils.DeclareQueueExchange(m_Sender.Channel, chatRoomName, Constants.EXCHANGE_TYPES[EExchangeType.Fanout]);
+                RabbitUtils.BindExchangeToQueue(m_Sender.Channel, chatRoomName, m_Sender.User);
+                m_CurrentRoomChat = chatRoomName;
+            }
+            else
+            {
+                string localChatRoomName = string.Format(Constants.DB_CHATROOM_STRING_FORMAT, m_Sender.User, targetUserName);
+                
+                DatabaseUtils.Create1To1ChatRoom(localChatRoomName);
+                RabbitUtils.DeclareQueueExchange(m_Sender.Channel, localChatRoomName, Constants.EXCHANGE_TYPES[EExchangeType.Fanout]);
+                RabbitUtils.BindExchangeToQueue(m_Sender.Channel, localChatRoomName, m_Sender.User);
+                m_CurrentRoomChat = localChatRoomName;
+            }
+
+            m_ChatUiScreen.OpenChat(m_CurrentRoomChat);
+
             m_ChatUiScreen.Visible = true;
-            m_MessagesListScreen.Visible = false;
+            m_LobbyList.Visible = false;
         }
 
         private void HandleChatUIBackPressed(object sender, EventArgs e)
         {
             m_ChatUiScreen.Visible = false;
-            m_MessagesListScreen.Visible = true;
+            m_LobbyList.Visible = true;
         }
 
         private void HandleImageMessageSent(object sender, Image imageToSend)
         {
-            m_Sender.SendImageMessage(imageToSend);
+            m_Sender.SendImageMessage(imageToSend, m_CurrentRoomChat);
         }
 
         private void HandleTextMessageSent(object sender, string textToSend)
         {
-            m_Sender.SendTextMessage(textToSend);
+            m_Sender.SendTextMessage(textToSend, m_CurrentRoomChat);
         }
 
         private void HandleMessageReceived(object sender, Message receivedMessage)
@@ -104,7 +152,10 @@ namespace ImpostorTelegram
 
         private void ImpostorTelegram_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //m_LobbyConnectionManager.LeaveLobby(m_Sender.User);
+            if(m_Sender != null)
+            {
+                m_LobbyListUpdater.LeaveLobby(m_Sender.User);
+            }        
         }   
     }
 }

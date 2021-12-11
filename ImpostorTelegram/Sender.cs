@@ -11,6 +11,7 @@ namespace ImpostorTelegram
     class Sender
     {
         public string User => m_User;
+        public IModel Channel => m_Channel;
 
         private string m_User = string.Empty;
         
@@ -27,13 +28,10 @@ namespace ImpostorTelegram
                                 autoDelete: false,
                                 arguments: null);
 
-            m_Channel.QueueDeclare($"{m_User}_LobbyListener", true, false, false, null);
-
-            m_Channel.ExchangeDeclare("exch", "fanout");
-            m_Channel.QueueBind(m_User, "exch", "");                  
+            m_Channel.QueueDeclare($"{m_User}_LobbyListener", true, false, false, null);                        
         }
       
-        public void SendTextMessage(string message)
+        public void SendTextMessage(string message, string destination)
         {
             Message mess = new Message()
             {
@@ -46,21 +44,16 @@ namespace ImpostorTelegram
          
             byte[] body = RabbitUtils.CreateEncodedMessage(stringMess);
 
-            m_Channel.BasicPublish(exchange: "exch",
+            m_Channel.BasicPublish(exchange: destination,
                                  routingKey: m_User,
                                  basicProperties: null,
                                  body: body);
-           
+
+            DatabaseUtils.AddMessageToChatHistory(destination, stringMess);
         }
 
-        public void SendImageMessage(Image image)
-        {
-            m_Channel.QueueDeclare(queue: "hello",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-
+        public void SendImageMessage(Image image, string destination)
+        {        
             Message mess = new Message()
             {
                 Author = m_User,
@@ -72,20 +65,14 @@ namespace ImpostorTelegram
 
             byte[] body = RabbitUtils.CreateEncodedMessage(stringMess);
 
-            m_Channel.BasicPublish(exchange: "",
-                                 routingKey: "hello",
+            m_Channel.BasicPublish(exchange: destination,
+                                 routingKey: m_User,
                                  basicProperties: null,
                                  body: body);
         }
 
-        public void SendSoundMessage(string pathToSound)
-        {
-            m_Channel.QueueDeclare(queue: "hello",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-
+        public void SendSoundMessage(string pathToSound, string destination)
+        {           
             Message mess = new Message()
             {
                 Author = m_User,
@@ -97,8 +84,8 @@ namespace ImpostorTelegram
 
             byte[] body = RabbitUtils.CreateEncodedMessage(stringMess);
 
-            m_Channel.BasicPublish(exchange: "",
-                                 routingKey: "hello",
+            m_Channel.BasicPublish(exchange: destination,
+                                 routingKey: m_User,
                                  basicProperties: null,
                                  body: body);
         }

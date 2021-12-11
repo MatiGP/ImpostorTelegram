@@ -16,6 +16,7 @@ namespace ImpostorTelegram
 
         public LoginScreen()
         {
+            #region Design Stuff
             Label AppNameLabel, NameLabel, SurnameLabel;
             AppNameLabel = new Label();
             NameLabel = new Label();
@@ -77,6 +78,8 @@ namespace ImpostorTelegram
             {
                 RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
             }
+
+            #endregion
 
             Controls.Add(AppNameLabel);
             Controls.Add(NameLabel);

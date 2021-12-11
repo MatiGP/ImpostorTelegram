@@ -10,11 +10,11 @@ namespace ImpostorTelegram
 {
     class RoomJoinScreen : TableLayoutPanel
     {
+        public event EventHandler<string> OnRoomCreated;
+
         public TextBox password;
-        public static RoomJoinScreen Instance;
         public RoomJoinScreen()
         {
-            Instance = this;
             Label loginHintText = new Label();
             loginHintText.AutoSize = false;
             loginHintText.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
@@ -62,8 +62,7 @@ namespace ImpostorTelegram
         {
             if (password.Text.Length > 0)
             {
-                //Room login logics
-                ChatUiScreen.Instance.OpenChat(password.Text);
+                OnRoomCreated.Invoke(this, password.Text);
                 password.Text = "";
             }
             else
