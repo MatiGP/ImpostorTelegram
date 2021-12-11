@@ -79,6 +79,7 @@ namespace ImpostorTelegram
            
             m_ChatUiScreen.OnTextMessageSent += HandleTextMessageSent;
             m_ChatUiScreen.OnImageMessageSent += HandleImageMessageSent;
+            m_ChatUiScreen.OnSoundSent += HandleSoundMessageSent;
             m_ChatUiScreen.OnBackPressed += HandleChatUIBackPressed;
            
             m_LobbyList.OnUserSelected += HandleChatSelected;
@@ -89,6 +90,11 @@ namespace ImpostorTelegram
             m_RoomJoinScreen.OnRoomCreated += HandleRoomCreated;
         }
 
+        private void HandleSoundMessageSent(object sender, byte[] soundBytes)
+        {
+            m_Sender.SendSoundMessage(soundBytes, m_CurrentRoomChat);
+        }
+
         private void HandleGroupButtonPressed(object sender, EventArgs e)
         {
             m_LobbyList.Visible = false;
@@ -97,9 +103,16 @@ namespace ImpostorTelegram
 
         private void HandleRoomCreated(object sender, string roomName)
         {
+            if(DatabaseUtils.IsUserBannedFromChat(m_Sender.User, roomName))
+            {
+                MessageBox.Show($"You are banned from {roomName}");
+                return;
+            }
+        
             RabbitUtils.DeclareQueueExchange(m_Sender.Channel, roomName, Constants.EXCHANGE_TYPES[EExchangeType.Fanout]);
-            RabbitUtils.BindExchangeToQueue(m_Sender.Channel, roomName, m_Sender.User);
+            RabbitUtils.BindExchangeToQueue(m_Sender.Channel, roomName, m_Sender.User);                
             m_ChatUiScreen.OpenChat(roomName);
+            m_Sender.SendJoinMessage(roomName);
             m_CurrentRoomChat = roomName;
 
         }
@@ -124,6 +137,7 @@ namespace ImpostorTelegram
             }
 
             m_ChatUiScreen.OpenChat(m_CurrentRoomChat);
+            m_ChatUiScreen.SetNameLabel(targetUserName);
 
             m_ChatUiScreen.Visible = true;
             m_LobbyList.Visible = false;
@@ -142,11 +156,36 @@ namespace ImpostorTelegram
 
         private void HandleTextMessageSent(object sender, string textToSend)
         {
+            if(textToSend.Length > 6 && textToSend.Substring(0, 5) == "/ban ")
+            {
+                string userName = textToSend.Substring(5);
+                if(userName.Length > 2)
+                {
+                    m_Sender.SendBanRequest(m_CurrentRoomChat, userName);
+                }               
+            }
+
             m_Sender.SendTextMessage(textToSend, m_CurrentRoomChat);
         }
 
         private void HandleMessageReceived(object sender, Message receivedMessage)
         {
+            if (receivedMessage.MessageType == EMessageType.UserBanned &&
+                DatabaseUtils.IsUserBannedFromChat(m_Sender.User, m_CurrentRoomChat)
+                )
+            {
+                Invoke(new Action(() =>
+                {
+                    m_ChatUiScreen.Visible = false;
+                    m_LobbyList.Visible = true;
+                    m_Sender.Channel.QueueUnbind(m_Sender.User, m_CurrentRoomChat, "", null);
+                    MessageBox.Show("You have been banned.");
+                }
+                ));
+               
+                return;
+            }
+
             m_ChatUiScreen.AddMessageToUi(receivedMessage);
         }
 

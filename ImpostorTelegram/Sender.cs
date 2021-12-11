@@ -71,12 +71,12 @@ namespace ImpostorTelegram
                                  body: body);
         }
 
-        public void SendSoundMessage(string pathToSound, string destination)
+        public void SendSoundMessage(byte[] soundByteArray, string destination)
         {           
             Message mess = new Message()
             {
                 Author = m_User,
-                MessageText = RabbitUtils.CreateEncodedSound(pathToSound),
+                MessageText = soundByteArray,
                 MessageType = EMessageType.Sound
             };
 
@@ -85,6 +85,35 @@ namespace ImpostorTelegram
             byte[] body = RabbitUtils.CreateEncodedMessage(stringMess);
 
             m_Channel.BasicPublish(exchange: destination,
+                                 routingKey: m_User,
+                                 basicProperties: null,
+                                 body: body);
+        }
+
+        public void SendBanRequest(string destination, string userToBan)
+        {
+            byte[] banMessage = RabbitUtils.GetBanSystemMessage(userToBan);
+
+            m_Channel.BasicPublish(exchange: destination,
+                                 routingKey: m_User,
+                                 basicProperties: null,
+                                 body: banMessage);
+
+            byte[] body = RabbitUtils.RequestUserBan(userToBan, destination);
+
+            m_Channel.BasicPublish(exchange: destination,
+                                 routingKey: m_User,
+                                 basicProperties: null,
+                                 body: body);
+            
+            DatabaseUtils.BanUserFromRoom(userToBan, destination);
+        }
+
+        public void SendJoinMessage(string roomName)
+        {
+            byte[] body = RabbitUtils.GetUserJoinedSystemMessage(m_User);
+            
+            m_Channel.BasicPublish(exchange: roomName,
                                  routingKey: m_User,
                                  basicProperties: null,
                                  body: body);

@@ -25,6 +25,7 @@ namespace ImpostorTelegram
         public const string DEFAULT_LOBBY_EXCHANGE_NAME = "LobbyExch";
         public const string DB_CONNECTION_STRING_FORMAT = "SERVER={0};DATABASE={1};UID={2};PASSWORD={3};";
         public const string DB_CHATROOM_STRING_FORMAT = "{0}{1}";
+        public const string CHAT_BAN_FORMAT = "/ban {0}";
         
         public const int MESSAGE_BUTTON_HEIGHT = 80;        
         public const int LOGIN_ROW_HEIGHT = 6;
@@ -33,6 +34,13 @@ namespace ImpostorTelegram
         {
             { EExchangeType.Fanout, "fanout" },
             { EExchangeType.Direct, "direct" }
+        };
+
+        public static Dictionary<string, EMediaType> FILE_TYPES = new Dictionary<string, EMediaType>()
+        {
+            {".png", EMediaType.Image },
+            {".jpg", EMediaType.Image },
+            {".mp3", EMediaType.Sound }
         };
 
         
@@ -45,5 +53,11 @@ namespace ImpostorTelegram
     {
         Fanout,
         Direct
+    }
+
+    public enum EMediaType
+    {
+        Sound,
+        Image
     }
 }

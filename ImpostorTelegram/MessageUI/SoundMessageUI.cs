@@ -6,18 +6,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAudio.Wave;
 
 namespace ImpostorTelegram.MessageUI
 {
     class SoundMessageUI : MessageUi
-    {
+    {      
         private PictureBox playButton;
+        private Mp3FileReader m_MP3FileReader = null;
+        private WaveOutEvent m_WaveOut = null;
+
+        bool m_IsPlaying = false;
 
         public SoundMessageUI(Message message)
         {
             SetUpMessageUI();
             SetUpAuthorLabel(message.Author);
-
+            
+            #region Design
             TableLayoutPanel musicTableLayoutPanel = new TableLayoutPanel();
             musicTableLayoutPanel.BackColor = Constants.MAIN_BACKGROUND_COLOR;
             musicTableLayoutPanel.AutoSize = true;
@@ -30,7 +36,7 @@ namespace ImpostorTelegram.MessageUI
             Label musicName = new Label();
             musicName.ForeColor = Constants.FONT_COLOR;
             musicName.Font = Constants.GLOBAL_NORMAL_FONT;
-            musicName.Text = "Testowa nazwa do zmiany.mp3";
+            musicName.Text = "[MusicMP3].mp3";
             musicName.Margin = new Padding(0, 30, 0, 0);
             musicName.AutoSize = true;
 
@@ -51,6 +57,13 @@ namespace ImpostorTelegram.MessageUI
             musicTableLayoutPanel.Controls.Add(playButton);
 
             Controls.Add(musicTableLayoutPanel);
+            #endregion
+
+            byte[] fileByte = message.MessageText;
+            Stream stream = new MemoryStream(fileByte);
+            m_MP3FileReader = new Mp3FileReader(stream);
+            m_WaveOut = new WaveOutEvent();
+            m_WaveOut.Init(m_MP3FileReader);
         }
         private void playButtonLeave(object sender, EventArgs e)
         {
@@ -64,7 +77,23 @@ namespace ImpostorTelegram.MessageUI
 
         private void playButtonClick(object sender, EventArgs e)
         {
-            MessageBox.Show("Brak implementacji");
+            if (!m_IsPlaying)
+            {
+                m_WaveOut.Play();                
+                m_IsPlaying = true;
+            }
+            else
+            {
+                m_WaveOut.Pause();
+                m_IsPlaying = false;
+            }
+        }
+
+        public void PauseMusic(object sender, EventArgs e)
+        {
+            m_WaveOut.Pause();
+            m_WaveOut.Dispose();
+            m_MP3FileReader.Dispose();
         }
     }
 }

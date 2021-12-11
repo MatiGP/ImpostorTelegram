@@ -14,6 +14,7 @@ namespace ImpostorTelegram
 
         public event EventHandler<string> OnTextMessageSent;
         public event EventHandler<Image> OnImageMessageSent;
+        public event EventHandler<byte[]> OnSoundSent;
 
         private Label m_UserName;
         PictureBox m_BackIcon;
@@ -84,7 +85,7 @@ namespace ImpostorTelegram
             m_MessageScrollUI.Margin = new Padding(0);
             m_MessageScrollUI.AutoScroll = true;
             m_MessageScrollUI.WrapContents = false;
-            m_MessageScrollUI.FlowDirection = FlowDirection.TopDown;           
+            m_MessageScrollUI.FlowDirection = FlowDirection.TopDown;
 
             m_UploadIcon = new PictureBox();
             m_UploadIcon.BackColor = Color.Transparent;
@@ -148,8 +149,7 @@ namespace ImpostorTelegram
             Controls.Add(inMessageUiTablePanel);
 
             #endregion
-
-        }
+        }     
 
         private void UploadMouseLeave(object sender, EventArgs e)
         {
@@ -182,6 +182,8 @@ namespace ImpostorTelegram
                     break;
                 case EMessageType.Sound:
                     messageUI = new SoundMessageUI(message);
+                    SoundMessageUI soundMessageUI = messageUI as SoundMessageUI;
+                    OnBackPressed += soundMessageUI.PauseMusic;
                     break;
                 case EMessageType.Image:
                     messageUI = new ImageMessageUI(message);
@@ -190,13 +192,14 @@ namespace ImpostorTelegram
             m_MessageScrollUI.Invoke(new Action(() =>
             {
                 m_MessageScrollUI.Controls.Add(messageUI);
+                m_MessageScrollUI.ScrollControlIntoView(messageUI);
             }));
         }
 
         private void UploadIconButton(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files (*.png)|*.png";
+            openFileDialog.Filter = "Images |*.jpg;*.png|Sounds|*.mp3";
 
             string filePath = string.Empty;
 
@@ -204,14 +207,24 @@ namespace ImpostorTelegram
             {
                 filePath = openFileDialog.FileName;
 
-                //Stream fileStream = openFileDialog.OpenFile();
-                OnImageMessageSent?.Invoke(this, Image.FromFile(filePath));
+                string ext = Path.GetExtension(filePath);
+
+                switch (Constants.FILE_TYPES[ext])
+                {
+                    case EMediaType.Image:
+                        OnImageMessageSent?.Invoke(this, Image.FromFile(filePath));
+                        break;
+                    case EMediaType.Sound:
+                        OnSoundSent?.Invoke(this, RabbitUtils.CreateEncodedSound(filePath));
+                        break;
+                }                
             }
         }
 
         private void sendIconClick(object sender, EventArgs e)
-        {
+        {          
             OnTextMessageSent?.Invoke(this, m_MessageText.Text);
+            m_MessageText.Text = "";
         }
 
         private void OnMouseLeave(object sender, EventArgs e)
@@ -236,6 +249,11 @@ namespace ImpostorTelegram
             Visible = true;
             m_ChatName = name;
             LoadPreviousMessages(name);
+        }
+
+        public void SetNameLabel(string chatName)
+        {
+            m_UserName.Text = chatName;
         }
         
         private void LoadPreviousMessages(string ID)

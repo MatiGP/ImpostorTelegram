@@ -83,6 +83,18 @@ namespace ImpostorTelegram
             return CreateEncodedMessage(jsonString);
         }
 
+        public static byte[] RequestUserBan(string userCreds, string roomName)
+        {
+            Message message = new Message() { Author = userCreds,
+                MessageText = CreateEncodedMessage(roomName),
+                MessageType = EMessageType.UserBanned 
+            };
+
+            string jsonString = JsonConvert.SerializeObject(message);
+
+            return CreateEncodedMessage(jsonString);
+        }
+
         public static void DeclareQueueExchange(IModel channel, string exchangeName, string type)
         {
             channel.ExchangeDeclare(exchangeName, type, false, false, null);
@@ -90,8 +102,39 @@ namespace ImpostorTelegram
 
         public static void BindExchangeToQueue(IModel channel, string exchangeName, string queueName)
         {
-            channel.QueueBind(queueName, exchangeName, "", null);
-           
+            channel.QueueBind(queueName, exchangeName, "", null);                    
+        }
+
+        public static byte[] GetBanSystemMessage(string user)
+        {
+            byte[] banMessage = CreateEncodedMessage($"User {user} terminated.");
+
+            Message message = new Message()
+            {
+                Author = "[SYSTEM]",
+                MessageText = banMessage,
+                MessageType = EMessageType.Text
+            };
+
+            string jsonString = JsonConvert.SerializeObject(message);
+
+            return CreateEncodedMessage(jsonString);
+        }
+
+        public static byte[] GetUserJoinedSystemMessage(string user)
+        {
+            byte[] joinMessage = CreateEncodedMessage($"{user} joined chat.");
+
+            Message message = new Message()
+            {
+                Author = "[SYSTEM]",
+                MessageText = joinMessage,
+                MessageType = EMessageType.Text
+            };
+
+            string jsonString = JsonConvert.SerializeObject(message);
+
+            return CreateEncodedMessage(jsonString);
         }
 
 
@@ -109,6 +152,8 @@ namespace ImpostorTelegram
         
         //LOGS
         UserEnter = 3,
-        UserExit = 4
+        UserExit = 4,
+        UserBanned = 5,
+        UserJoined = 6
     }   
 }
